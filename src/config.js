@@ -1,4 +1,90 @@
 // Static source data and defaults config.js
+// Static source data and defaults config.js
+
+// ===============================
+// MOOD THEMES AND ACTIVITIES (define first)
+// ===============================
+const MOOD_THEMES = {
+    energetic: {
+        label: "⚡ Energetic",
+        primary: "#4f83ff",
+        accent: "#58d3ff",
+        bg: "#0b1220",
+        card: "#1e2a44",
+        emoji: "⚡",
+        activityBoost: 1.2,
+        description: "High energy, ready to tackle challenges"
+    },
+    calm: {
+        label: "🧘 Calm",
+        primary: "#6ba3d9",
+        accent: "#7eb3ff",
+        bg: "#0d1419",
+        card: "#1a232f",
+        emoji: "🧘",
+        activityBoost: 1.0,
+        description: "Peaceful, reflective, steady pace"
+    },
+    focused: {
+        label: "🎯 Focused",
+        primary: "#ff9d4f",
+        accent: "#ffb366",
+        bg: "#1a1010",
+        card: "#2d1f1f",
+        emoji: "🎯",
+        activityBoost: 1.3,
+        description: "Deep work mode, minimal distractions"
+    },
+    tired: {
+        label: "😴 Tired",
+        primary: "#a78bfa",
+        accent: "#c4b5fd",
+        bg: "#0f0d1a",
+        card: "#1f1d3a",
+        emoji: "😴",
+        activityBoost: 0.7,
+        description: "Low energy, need gentle breaks"
+    },
+    overwhelmed: {
+        label: "😰 Overwhelmed",
+        primary: "#f87171",
+        accent: "#fca5a5",
+        bg: "#160b0b",
+        card: "#2d1515",
+        emoji: "😰",
+        activityBoost: 0.6,
+        description: "Need to simplify, take it slow"
+    }
+};
+
+const MOOD_ACTIVITIES = {
+    energetic: [
+        { type: "focus", duration: 45, intensity: "high" },
+        { type: "break", duration: 10 },
+        { type: "physical", duration: 15, activity: "Walk or stretch vigorously" }
+    ],
+    calm: [
+        { type: "focus", duration: 30, intensity: "medium" },
+        { type: "break", duration: 8, activity: "Breathe, meditate" },
+        { type: "reflection", duration: 10 }
+    ],
+    focused: [
+        { type: "focus", duration: 60, intensity: "deep" },
+        { type: "break", duration: 5, activity: "Quick water break" }
+    ],
+    tired: [
+        { type: "focus", duration: 20, intensity: "light" },
+        { type: "break", duration: 15, activity: "Rest, hydrate" },
+        { type: "rest", duration: 20, activity: "Nap or lie down" }
+    ],
+    overwhelmed: [
+        { type: "grounding", duration: 10, activity: "5-4-3-2-1 technique" },
+        { type: "focus", duration: 15, intensity: "minimal" },
+        { type: "break", duration: 20, activity: "Walk outside, breathe" }
+    ]
+};
+
+// ... rest of config.js stays the same ...
 const affirmationsArabic = [
     "Ana kafiya b rassi.", "Ma khasnich nkon kamla bach nkon mzyana.",
     "Kan9der ndir li 9drit lyom.", "Chwiya chwiya rah mzyana.", "Rassi kaystahal l7nan."

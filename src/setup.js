@@ -4,7 +4,7 @@
 
 function askProfile(onDone) {
     render({
-        text: "👋 Welcome! Let’s personalize your day.",
+        text: "👋 Welcome! Let's personalize your day.",
         subtext: "These details help adjust timings and suggestions."
     });
 
@@ -29,8 +29,15 @@ function askProfile(onDone) {
     </div>
 
     <div class="field">
-      <label>Today’s main priority</label>
-      <input type="text" id="priority" placeholder="e.g., Portfolio, Job search, DSA">
+      <label>How are you feeling today?</label>
+      <select id="mood-select">
+        <option value="">-- Select mood --</option>
+        <option value="energetic">⚡ Energetic</option>
+        <option value="calm">🧘 Calm</option>
+        <option value="focused">🎯 Focused</option>
+        <option value="tired">😴 Tired</option>
+        <option value="overwhelmed">😰 Overwhelmed</option>
+      </select>
     </div>
   `;
     c.appendChild(row);
@@ -40,11 +47,22 @@ function askProfile(onDone) {
             const name = (document.getElementById("name").value || "").trim();
             const energy = Number(document.getElementById("energy").value || 6);
             const fh = Number(document.getElementById("focusHours").value || 4);
-            const priority = (document.getElementById("priority").value || "").trim();
+            const moodVal = (document.getElementById("mood-select").value || "").trim();
+
+            if (!moodVal) {
+                alert("Please select a mood to continue");
+                return;
+            }
 
             focusHours = Math.max(1, Math.min(10, fh));
-            dayMeta.userProfile = { name, energy, priority };
+            dayMeta.userProfile = { name, energy };
             dayMeta.focusHours = focusHours;
+            dayMeta.mood = moodVal;
+
+            // Apply mood theme immediately
+            if (typeof applyMoodTheme === "function") {
+                applyMoodTheme(moodVal);
+            }
 
             addNote({
                 type: "profile",

@@ -523,11 +523,27 @@ textarea {
 }
 
 #restart-btn:hover {
-    background: rgba(255, 68, 68, 1);
+    background: rgb(68, 255, 249);
     box-shadow: 0 6px 16px rgba(255, 68, 68, 0.6);
     transform: translateY(-2px);
 }
 
 #restart-btn:active {
     transform: translateY(0);
+}
+
+select {
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, .12);
+    background: rgba(0, 0, 0, .18);
+    color: var(--text);
+    font-size: 15px;
+    width: 100%;
+    cursor: pointer;
+}
+
+select option {
+    background: var(--bg);
+    color: var(--text);
 }
