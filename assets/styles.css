@@ -1,0 +1,315 @@
+:root {
+    --bg: #0b1220;
+    --card: #1e2a44;
+    --text: #bfc8e6;
+    --primary: #4f83ff;
+    --secondary: #2f3f66;
+    --accent: #58d3ff;
+    --muted: #96a1c8;
+}
+
+* {
+    box-sizing: border-box
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+#app {
+    width: 100%;
+    max-width: 900px;
+    background: var(--card);
+    border-radius: 18px;
+    padding: 26px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, .45);
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+h1 {
+    margin: 0;
+    font-size: 24px
+}
+
+#progress {
+    font-size: 14px;
+    color: var(--muted)
+}
+
+#text {
+    font-size: 18px;
+    margin: 18px 0 8px;
+    line-height: 1.7;
+    text-align: center;
+}
+
+#subtext {
+    font-size: 15px;
+    color: var(--muted);
+    text-align: center;
+}
+
+#timer {
+    font-size: 40px;
+    text-align: center;
+    margin: 12px 0 10px;
+    letter-spacing: 1px
+}
+
+#dice {
+    font-size: 90px;
+    text-align: center;
+    cursor: pointer;
+    margin: 8px 0
+}
+
+#result {
+    display: none;
+    background: var(--bg);
+    border-radius: 12px;
+    padding: 12px;
+    margin-top: 14px;
+    text-align: left;
+    white-space: pre-wrap
+}
+
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 10px;
+    margin-top: 14px
+}
+
+button {
+    background: var(--primary);
+    border: none;
+    border-radius: 12px;
+    padding: 14px;
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+button.secondary {
+    background: var(--secondary)
+}
+
+button.ghost {
+    background: transparent;
+    border: 1px solid var(--secondary);
+    color: var(--text)
+}
+
+button:disabled {
+    opacity: .6;
+    cursor: not-allowed
+}
+
+#checklist {
+    margin-top: 12px
+}
+
+.checklist-item {
+    margin: 6px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 10px;
+    padding: 10px 12px;
+}
+
+.checklist-item.done {
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+
+.small {
+    opacity: .8;
+    font-size: 15px;
+    text-align: center;
+}
+
+.pill {
+    display: inline-block;
+    padding: 4px 10px;
+    background: rgba(88, 211, 255, .12);
+    border: 1px solid rgba(88, 211, 255, .25);
+    border-radius: 999px;
+    color: #bfefff;
+    font-size: 12px
+}
+
+.grid2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 8px 0;
+    background: rgba(255, 255, 255, 0.04);
+    padding: 12px;
+    border-radius: 10px;
+}
+
+label {
+    font-size: 14px;
+    color: var(--muted)
+}
+
+input[type="number"],
+input[type="text"],
+textarea,
+select {
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, .12);
+    background: rgba(0, 0, 0, .18);
+    color: var(--text);
+    font-size: 15px;
+    width: 100%;
+}
+
+textarea {
+    min-height: 90px;
+    resize: vertical
+}
+
+.row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center
+}
+
+.kpi {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    font-size: 14px;
+    color: var(--muted)
+}
+
+.kpi .pill {
+    background: rgba(255, 255, 255, .06);
+    border-color: rgba(255, 255, 255, .12)
+}
+
+.affirm {
+    font-size: 20px;
+    text-align: center;
+    margin: 6px 0 2px
+}
+
+.note {
+    font-size: 13px;
+    color: var(--muted);
+    text-align: center
+}
+
+/* Animations and category accents */
+.fade-in {
+    animation: fade .35s ease-out both;
+}
+
+@keyframes fade {
+    from {
+        opacity: 0;
+        transform: translateY(6px)
+    }
+
+    to {
+        opacity: 1;
+        transform: none
+    }
+}
+
+.cat {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    border: 1px solid transparent
+}
+
+.cat-morning {
+    background: #15304f;
+    color: #bcd6ff;
+    border-color: #244973
+}
+
+.cat-afternoon {
+    background: #243a2a;
+    color: #c9f3d1;
+    border-color: #385b42
+}
+
+.cat-night {
+    background: #2b2445;
+    color: #e0d5ff;
+    border-color: #42376c
+}
+
+.cat-focus {
+    background: #20304b;
+    color: #d2e4ff;
+    border-color: #384f78
+}
+
+.cat-faith {
+    background: #2a2b1f;
+    color: #e6e2bf;
+    border-color: #54522d
+}
+
+.cat-health {
+    background: #2a3640;
+    color: #cfeaf7;
+    border-color: #3f5563
+}
+
+.cat-learning {
+    background: #2b2542;
+    color: #eadcff;
+    border-color: #4b3e77
+}
+
+.meta {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 6px 0
+}
+
+.muted {
+    color: var(--muted)
+}
+
+.list-compact {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 6px
+}
