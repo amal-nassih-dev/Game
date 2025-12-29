@@ -53,14 +53,24 @@ function buildSessionsFromDice() {
 function distributeWaves() {
     waves = { morning: [], afternoon: [], night: [] };
     const ifFasting = appConfig.fasting;
-    // When fasting, bias more slots toward morning (0) and limit long night sessions
-    const bias = ifFasting ? [0, 0, 1, 0, 0, 1, 0, 0, 2, 0, 1, 0] // more morning slots
-        : [0, 1, 2, 0, 1, 2, 0, 1, 2];
+    
+    // Randomize bias to shuffle activity order throughout the day
+    const biases = [
+        [0, 0, 1, 0, 0, 1, 0, 0, 2, 0, 1, 0], // more morning
+        [0, 1, 2, 0, 1, 2, 0, 1, 2],           // balanced
+        [1, 0, 1, 2, 0, 1, 2, 1, 0]            // varied
+    ];
+    
+    const bias = biases[Math.floor(Math.random() * biases.length)];
+    
     sessions.forEach((s, idx) => {
         const slot = bias[idx % bias.length];
         if (slot === 0) waves.morning.push(s);
         else if (slot === 1) waves.afternoon.push(s);
         else waves.night.push(s);
     });
-    if (ifFasting) { waves.night.forEach(ss => { ss.minutes = Math.min(ss.minutes, 25); }); }
+    
+    if (ifFasting) { 
+        waves.night.forEach(ss => { ss.minutes = Math.min(ss.minutes, 25); }); 
+    }
 }

@@ -58,20 +58,29 @@ function next() {
             render({ text: "🎧 Morning calm audio", subtext: `<span class="pill">5 minutes</span>` });
             startTimer(5, next);
             break;
+        
+        // Mini break after afternoon wave — random order & mood-based
+        case 7: // (or wherever you want dynamic breaks between waves)
+            const moodMsg = getTransitionMessageByMood();
+            render({ 
+                text: moodMsg, 
+                buttons: [{ label: "Continue", action: next }] 
+            });
+            break;
 
         // Spiritual
-        case 7:
+        case 8:
             render({ text: "📖 Quran memorization", subtext: `<span class="pill">15 minutes</span>` });
             startTimer(15, next);
             break;
 
-        case 8:
+        case 9:
             render({ text: "📖 Quran reading + Adkar Sabah", subtext: `<span class="pill">15 minutes</span>` });
             startTimer(15, () => askReflection("morning", next));
             break;
 
         // Planning + Dice
-        case 9:
+        case 10:
             loadMoodTheme(); // Load saved mood if any
             render({ text: "🌅 How are you feeling?", subtext: `This adjusts your day's activities` });
             showMoodSelector(() => {
@@ -79,7 +88,7 @@ function next() {
             });
             break;
 
-        case 10:
+        case 11:
             render({
                 text: "🎲 Split the focus block",
                 subtext: `Using your configured subjects`,
@@ -107,21 +116,24 @@ function next() {
             break;
 
         // Wave 1: Morning focus
-        case 11:
+        case 12:
             if (waves.morning.length === 0) { next(); break; }
             runWave(waves.morning, next);
             break;
 
-        // Mini break
-        case 12:
-            const moodActivities = dayMeta.mood ? MOOD_ACTIVITIES[dayMeta.mood] : MOOD_ACTIVITIES.calm;
-            const breakActivity = moodActivities.find(a => a.type === "break");
-            const breakText = breakActivity ? `${breakActivity.activity || randomEnergy()} (${breakActivity.duration} min)` : randomEnergy();
-            render({ text: breakText, buttons: [{ label: "Next", action: next }] });
+         // Mini break (case 12) — now uses mood-based duration + activity
+        case 13:
+            const breakDur = getBreakDurationByMood();
+            const breakActivity = pickActivityByMood("break") || randomEnergy();
+            render({ 
+                text: breakActivity, 
+                subtext: `<span class="pill">${breakDur} minutes</span>`,
+                buttons: [{ label: "Start", action: () => startTimer(breakDur, next) }, { label: "Skip", variant: "secondary", action: next }]
+            });
             break;
 
         // Lunch
-        case 13:
+        case 14:
             if (appConfig.fasting && isBeforeIftar()) {
                 render({ text: "🧘 Midday reset", subtext: `<span class="pill">10 minutes</span>`, buttons: [{ label: "Start 10 min", action: () => startTimer(10, next) }] });
             } else {
@@ -135,7 +147,7 @@ function next() {
             break;
 
         // Wave 2: Afternoon focus + reflection
-        case 14:
+        case 15:
             if (waves.afternoon.length === 0) {
                 askReflection("afternoon", next);
                 break;
@@ -144,34 +156,47 @@ function next() {
             break;
 
         // Writing + research
-        case 15:
+        case 16:
             render({ text: "✍️ Writing: reflect on people who look down on themselves", subtext: `<span class="pill">25–50 minutes</span>` });
             startTimer(30, next);
             break;
 
-        case 16:
+        case 17:
             render({ text: "💻 Research", subtext: `<span class="pill">25–50 minutes</span>` });
             startTimer(30, next);
             break;
 
-        // Mood changer
-        case 17:
-            render({ text: "🌬️ Stretch and breathe", subtext: `<span class="pill">5 minutes</span>` });
-            startTimer(5, next);
+        // Mood changer (case 17) — dynamic pause activities
+        case 18:
+            const pauseDur = getPauseDurationByMood();
+            const pauseActivity = pickActivityByMood("pause") || "🌬️ Breathe";
+            render({ 
+                text: pauseActivity, 
+                subtext: `<span class="pill">${pauseDur} minutes</span>` 
+            });
+            startTimer(pauseDur, next);
             break;
 
-        case 18:
+
+        
+        // Case 18 — energy reset with mood + body awareness
+        case 19:
             if (appConfig.fasting && isBeforeIftar()) {
-                render({ text: "🌬️ Light energy reset", subtext: `<span class="note">${randomEnergy()}</span>`, buttons: [{ label: "Done", action: next }] });
+                render({ 
+                    text: "🌬️ Light energy reset", 
+                    subtext: `<span class="note">${pickActivityByMood("pause") || randomEnergy()}</span>`, 
+                    buttons: [{ label: "Done", action: next }] 
+                });
             } else {
-                const moodActivities = dayMeta.mood ? MOOD_ACTIVITIES[dayMeta.mood] : MOOD_ACTIVITIES.calm;
-                const energyAct = moodActivities.find(a => a.type.includes("rest") || a.type === "break");
-                const energyText = energyAct ? energyAct.activity : "🍎 Eat fruit / nuts / drink water";
-                render({ text: energyText, buttons: [{ label: "Done", action: next }] });
+                const bodyActivity = pickBodyAwareActivity("break") || pickActivityByMood("break") || "🍎 Fruit + water";
+                render({ 
+                    text: bodyActivity, 
+                    buttons: [{ label: "Done", action: next }] 
+                });
             }
             break;
 
-        case 19:
+        case 20:
             // Move Quran/faith and gentle energy activities to evening when fasting
             if (appConfig.fasting) {
                 render({ text: "📖 Quran reading & Adkar", subtext: `<span class="pill">15 minutes</span>` });
@@ -182,40 +207,40 @@ function next() {
             } break;
 
         // Wave 3: Night focus
-        case 20:
+        case 21:
             if (waves.night.length === 0) { next(); break; }
             runWave(waves.night, next);
             break;
 
-        case 21: {
+        case 22: {
             const her = dayMeta.userProfile?.name ? `, ${dayMeta.userProfile.name}` : "";
             render({ text: `✨ Affirmation review${her}`, buttons: [{ label: "Done", action: next }] });
             break;
         }
 
         // Journaling & Closing
-        case 22:
+        case 23:
             render({ text: "📝 Journal: one challenge and solution" });
             journalingForm("One challenge and solution", next);
             break;
 
-        case 23:
+        case 24:
             render({ text: "📝 Journal: 3 things done well today" });
             journalingForm("3 things done well", next);
             break;
 
-        case 24:
+        case 25:
             render({ text: "📝 Reflection: mood, resistance, energy levels" });
             journalingForm("Mood, resistance, energy", next);
             break;
 
-        case 25: {
+        case 26: {
             const her = dayMeta.userProfile?.name ? `, ${dayMeta.userProfile.name}` : "";
             render({ text: `🎉 Congratulate yourself for completing focus sessions${her}`, buttons: [{ label: "Done", action: next }] });
             break;
         }
 
-        case 26:
+        case 27:
             render({ text: "🌑 End-of-day message & self-reflection: gratitude / lessons / plan tomorrow" });
             endOfDayForm(() => showDownload());
             break;
@@ -278,87 +303,27 @@ function renderCurrentStep() {
     const wasTimerRunning = timerRemaining > 0;
 
     switch (step) {
+
         // Morning / Ground
         case 1: {
             const her = dayMeta.userProfile?.name ? `, ${dayMeta.userProfile.name}` : "";
             if (appConfig.fasting) {
+                // When fasting, avoid drink-water prompt — do a quick grounding instead
                 render({ text: `🧘‍♀️ Grounding${her}`, subtext: `<span class="pill">2 minutes</span>` });
-                if (!wasTimerRunning) startTimer(2, next);
-                else resumeTimer(next); // Resume existing timer
+                startTimer(2, next);
             } else {
                 render({ text: `💧 Drink water${her}`, subtext: `<span class="pill">2 minutes</span>` });
-                if (!wasTimerRunning) startTimer(2, next);
-                else resumeTimer(next);
+                startTimer(2, next);
+
             }
             break;
         }
 
         case 2:
             render({ text: "🧘‍♀️ Sit silently", subtext: `<span class="pill">2 minutes</span>` });
-            if (!wasTimerRunning) startTimer(2, next);
-            else resumeTimer(next);
+            startTimer(2, next);
             break;
 
-        case 6:
-            render({ text: "🎧 Morning calm audio", subtext: `<span class="pill">5 minutes</span>` });
-            if (!wasTimerRunning) startTimer(5, next);
-            else resumeTimer(next);
-            break;
-
-        case 7:
-            render({ text: "📖 Quran memorization", subtext: `<span class="pill">15 minutes</span>` });
-            if (!wasTimerRunning) startTimer(15, next);
-            else resumeTimer(next);
-            break;
-
-        case 8:
-            render({ text: "📖 Quran reading + Adkar Sabah", subtext: `<span class="pill">15 minutes</span>` });
-            if (!wasTimerRunning) startTimer(15, () => askReflection("morning", next));
-            else resumeTimer(() => askReflection("morning", next));
-            break;
-
-        case 13:
-            if (appConfig.fasting && isBeforeIftar()) {
-                render({ text: "🧘 Midday reset", subtext: `<span class="pill">10 minutes</span>`, buttons: [{ label: "Start 10 min", action: () => startTimer(10, next) }] });
-            } else {
-                render({
-                    text: "🍽️ Lunch break", subtext: `<span class="pill">20–30 minutes</span>`, buttons: [
-                        { label: "Start 25 min", action: () => startTimer(25, next) },
-                        { label: "Skip", variant: "secondary", action: next }
-                    ]
-                });
-            }
-            break;
-
-        case 15:
-            render({ text: "✍️ Writing: reflect on people who look down on themselves", subtext: `<span class="pill">25–50 minutes</span>` });
-            if (!wasTimerRunning) startTimer(30, next);
-            else resumeTimer(next);
-            break;
-
-        case 16:
-            render({ text: "💻 Research", subtext: `<span class="pill">25–50 minutes</span>` });
-            if (!wasTimerRunning) startTimer(30, next);
-            else resumeTimer(next);
-            break;
-
-        case 17:
-            render({ text: "🌬️ Stretch and breathe", subtext: `<span class="pill">5 minutes</span>` });
-            if (!wasTimerRunning) startTimer(5, next);
-            else resumeTimer(next);
-            break;
-
-        case 19:
-            if (appConfig.fasting) {
-                render({ text: "📖 Quran reading & Adkar", subtext: `<span class="pill">15 minutes</span>` });
-                document.getElementById("buttons").appendChild(button("Start 15 min", () => startTimer(15, next)));
-                document.getElementById("buttons").appendChild(button("Or do an energy reset", next, "secondary"));
-            } else {
-                render({ text: "🎧 Listen to relaxing audio or podcast", buttons: [{ label: "Done", action: next }] });
-            }
-            break;
-
-        // All other cases unchanged (no timer)
         case 3:
             render({
                 text: "🌬️ Deep breathing (6 times)",
@@ -383,7 +348,33 @@ function renderCurrentStep() {
             }
             break;
 
+        case 6:
+            render({ text: "🎧 Morning calm audio", subtext: `<span class="pill">5 minutes</span>` });
+            startTimer(5, next);
+            break;
+        
+        // Mini break after afternoon wave — random order & mood-based
+        case 7: // (or wherever you want dynamic breaks between waves)
+            const moodMsg = getTransitionMessageByMood();
+            render({ 
+                text: moodMsg, 
+                buttons: [{ label: "Continue", action: next }] 
+            });
+            break;
+
+        // Spiritual
+        case 8:
+            render({ text: "📖 Quran memorization", subtext: `<span class="pill">15 minutes</span>` });
+            startTimer(15, next);
+            break;
+
         case 9:
+            render({ text: "📖 Quran reading + Adkar Sabah", subtext: `<span class="pill">15 minutes</span>` });
+            startTimer(15, () => askReflection("morning", next));
+            break;
+
+        // Planning + Dice
+        case 10:
             loadMoodTheme(); // Load saved mood if any
             render({ text: "🌅 How are you feeling?", subtext: `This adjusts your day's activities` });
             showMoodSelector(() => {
@@ -391,7 +382,7 @@ function renderCurrentStep() {
             });
             break;
 
-        case 10:
+        case 11:
             render({
                 text: "🎲 Split the focus block",
                 subtext: `Using your configured subjects`,
@@ -417,19 +408,40 @@ function renderCurrentStep() {
                 }]
             });
             break;
-        case 11:
+
+        // Wave 1: Morning focus
+        case 12:
             if (waves.morning.length === 0) { next(); break; }
             runWave(waves.morning, next);
             break;
 
-        case 12:
-            const moodActivities = dayMeta.mood ? MOOD_ACTIVITIES[dayMeta.mood] : MOOD_ACTIVITIES.calm;
-            const breakActivity = moodActivities.find(a => a.type === "break");
-            const breakText = breakActivity ? `${breakActivity.activity || randomEnergy()} (${breakActivity.duration} min)` : randomEnergy();
-            render({ text: breakText, buttons: [{ label: "Next", action: next }] });
+         // Mini break (case 12) — now uses mood-based duration + activity
+        case 13:
+            const breakDur = getBreakDurationByMood();
+            const breakActivity = pickActivityByMood("break") || randomEnergy();
+            render({ 
+                text: breakActivity, 
+                subtext: `<span class="pill">${breakDur} minutes</span>`,
+                buttons: [{ label: "Start", action: () => startTimer(breakDur, next) }, { label: "Skip", variant: "secondary", action: next }]
+            });
             break;
 
+        // Lunch
         case 14:
+            if (appConfig.fasting && isBeforeIftar()) {
+                render({ text: "🧘 Midday reset", subtext: `<span class="pill">10 minutes</span>`, buttons: [{ label: "Start 10 min", action: () => startTimer(10, next) }] });
+            } else {
+                render({
+                    text: "🍽️ Lunch break", subtext: `<span class="pill">20–30 minutes</span>`, buttons: [
+                        { label: "Start 25 min", action: () => startTimer(25, next) },
+                        { label: "Skip", variant: "secondary", action: next }
+                    ]
+                });
+            }
+            break;
+
+        // Wave 2: Afternoon focus + reflection
+        case 15:
             if (waves.afternoon.length === 0) {
                 askReflection("afternoon", next);
                 break;
@@ -437,50 +449,92 @@ function renderCurrentStep() {
             runWave(waves.afternoon, () => askReflection("afternoon", next));
             break;
 
+        // Writing + research
+        case 16:
+            render({ text: "✍️ Writing: reflect on people who look down on themselves", subtext: `<span class="pill">25–50 minutes</span>` });
+            startTimer(30, next);
+            break;
+
+        case 17:
+            render({ text: "💻 Research", subtext: `<span class="pill">25–50 minutes</span>` });
+            startTimer(30, next);
+            break;
+
+        // Mood changer (case 17) — dynamic pause activities
         case 18:
+            const pauseDur = getPauseDurationByMood();
+            const pauseActivity = pickActivityByMood("pause") || "🌬️ Breathe";
+            render({ 
+                text: pauseActivity, 
+                subtext: `<span class="pill">${pauseDur} minutes</span>` 
+            });
+            startTimer(pauseDur, next);
+            break;
+
+
+        
+        // Case 18 — energy reset with mood + body awareness
+        case 19:
             if (appConfig.fasting && isBeforeIftar()) {
-                render({ text: "🌬️ Light energy reset", subtext: `<span class="note">${randomEnergy()}</span>`, buttons: [{ label: "Done", action: next }] });
+                render({ 
+                    text: "🌬️ Light energy reset", 
+                    subtext: `<span class="note">${pickActivityByMood("pause") || randomEnergy()}</span>`, 
+                    buttons: [{ label: "Done", action: next }] 
+                });
             } else {
-                const moodActivities = dayMeta.mood ? MOOD_ACTIVITIES[dayMeta.mood] : MOOD_ACTIVITIES.calm;
-                const energyAct = moodActivities.find(a => a.type.includes("rest") || a.type === "break");
-                const energyText = energyAct ? energyAct.activity : "🍎 Eat fruit / nuts / drink water";
-                render({ text: energyText, buttons: [{ label: "Done", action: next }] });
+                const bodyActivity = pickBodyAwareActivity("break") || pickActivityByMood("break") || "🍎 Fruit + water";
+                render({ 
+                    text: bodyActivity, 
+                    buttons: [{ label: "Done", action: next }] 
+                });
             }
             break;
 
         case 20:
+            // Move Quran/faith and gentle energy activities to evening when fasting
+            if (appConfig.fasting) {
+                render({ text: "📖 Quran reading & Adkar", subtext: `<span class="pill">15 minutes</span>` });
+                document.getElementById("buttons").appendChild(button("Start 15 min", () => startTimer(15, next)));
+                document.getElementById("buttons").appendChild(button("Or do an energy reset", next, "secondary"));
+            } else {
+                render({ text: "🎧 Listen to relaxing audio or podcast", buttons: [{ label: "Done", action: next }] });
+            } break;
+
+        // Wave 3: Night focus
+        case 21:
             if (waves.night.length === 0) { next(); break; }
             runWave(waves.night, next);
             break;
 
-        case 21: {
+        case 22: {
             const her = dayMeta.userProfile?.name ? `, ${dayMeta.userProfile.name}` : "";
             render({ text: `✨ Affirmation review${her}`, buttons: [{ label: "Done", action: next }] });
             break;
         }
 
-        case 22:
+        // Journaling & Closing
+        case 23:
             render({ text: "📝 Journal: one challenge and solution" });
             journalingForm("One challenge and solution", next);
             break;
 
-        case 23:
+        case 24:
             render({ text: "📝 Journal: 3 things done well today" });
             journalingForm("3 things done well", next);
             break;
 
-        case 24:
+        case 25:
             render({ text: "📝 Reflection: mood, resistance, energy levels" });
             journalingForm("Mood, resistance, energy", next);
             break;
 
-        case 25: {
+        case 26: {
             const her = dayMeta.userProfile?.name ? `, ${dayMeta.userProfile.name}` : "";
             render({ text: `🎉 Congratulate yourself for completing focus sessions${her}`, buttons: [{ label: "Done", action: next }] });
             break;
         }
 
-        case 26:
+        case 27:
             render({ text: "🌑 End-of-day message & self-reflection: gratitude / lessons / plan tomorrow" });
             endOfDayForm(() => showDownload());
             break;

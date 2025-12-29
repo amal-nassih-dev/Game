@@ -57,31 +57,67 @@ const MOOD_THEMES = {
     }
 };
 
+// ...existing MOOD_THEMES and BODY_CONDITIONS...
+
 const MOOD_ACTIVITIES = {
     energetic: [
-        { type: "focus", duration: 45, intensity: "high" },
-        { type: "break", duration: 10 },
-        { type: "physical", duration: 15, activity: "Walk or stretch vigorously" }
+        { type: "break", duration: 8, activities: ["🚶 Quick energetic walk (5 min)", "💪 Push-ups or jumping jacks", "🎵 Dance to 1 song"] },
+        { type: "pause", duration: 5, activities: ["💧 Drink water + stretch", "🌬️ Power breathing (4-4-4)", "👀 Look away + eye circles"] },
+        { type: "transition", activities: ["Ready for more? Let's go! 🔥", "Energy high — next session coming up!", "Keep that momentum! 💨"] }
     ],
     calm: [
-        { type: "focus", duration: 30, intensity: "medium" },
-        { type: "break", duration: 8, activity: "Breathe, meditate" },
-        { type: "reflection", duration: 10 }
+        { type: "break", duration: 12, activities: ["🧘 Meditation (5 min)", "📖 Read something inspiring", "🍵 Tea break + quiet moment"] },
+        { type: "pause", duration: 6, activities: ["🌬️ Gentle breathing (4-7-8)", "👂 Listen to nature sounds", "✋ Hand massage + shoulder roll"] },
+        { type: "transition", activities: ["Take your time, next session when ready 🧘", "Breathe. You're doing great.", "Peace and focus ahead. 🕯️"] }
     ],
     focused: [
-        { type: "focus", duration: 60, intensity: "deep" },
-        { type: "break", duration: 5, activity: "Quick water break" }
+        { type: "break", duration: 6, activities: ["⚡ Quick walk or stair climb", "💧 Water + bathroom break", "📝 Jot down any ideas before continuing"] },
+        { type: "pause", duration: 3, activities: ["👀 20-20-20 rule (20s away)", "🔄 Rotate wrists/neck", "Deep breath, back to it"] },
+        { type: "transition", activities: ["Flow state incoming 🎯", "Ready to deep dive again?", "Next challenge awaits 🚀"] }
     ],
     tired: [
-        { type: "focus", duration: 20, intensity: "light" },
-        { type: "break", duration: 15, activity: "Rest, hydrate" },
-        { type: "rest", duration: 20, activity: "Nap or lie down" }
+        { type: "break", duration: 20, activities: ["🛏️ Lie down for 5 min", "🥛 Drink water + light snack", "🌬️ Slow breathing + gentle stretching"] },
+        { type: "pause", duration: 10, activities: ["👀 Close eyes briefly", "💆 Neck + shoulder release", "Sip water slowly"] },
+        { type: "transition", activities: ["Short session next, you can do this 💪", "Gentle pace ahead. Rest when needed.", "Energy building... keep going 🌱"] }
     ],
     overwhelmed: [
-        { type: "grounding", duration: 10, activity: "5-4-3-2-1 technique" },
-        { type: "focus", duration: 15, intensity: "minimal" },
-        { type: "break", duration: 20, activity: "Walk outside, breathe" }
+        { type: "break", duration: 15, activities: ["🚶 Walk outside if possible", "🧘 5-4-3-2-1 grounding technique", "💧 Hydrate + sit quietly"] },
+        { type: "pause", duration: 8, activities: ["🫁 Box breathing (4-4-4-4)", "👂 Calming sounds or music", "Hands on face — slow breath"] },
+        { type: "transition", activities: ["Small step next. You've got this 🌱", "One thing at a time. Breathe.", "Simplify. Breathe. Continue at your pace. 🕊️"] }
     ]
+};
+
+const BODY_CONDITION_ACTIVITIES = {
+    healthy: {
+        breakActivities: ["🚶 Walk", "💪 Stretch", "🌬️ Breathe", "💧 Hydrate"],
+        avoidActivities: [],
+        note: "Standard pace. No restrictions."
+    },
+    tiredBody: {
+        breakActivities: ["🧘 Sit and rest", "💧 Hydrate well", "👀 Eyes closed 2 min", "🧘 Gentle neck rolls"],
+        avoidActivities: ["Running", "Heavy lifting"],
+        note: "Rest more, move gently."
+    },
+    headache: {
+        breakActivities: ["👀 Dark room 3 min", "💧 Hydrate slowly", "🧘 Neck release", "🌬️ Calm breathing"],
+        avoidActivities: ["Bright screens (reduce brightness)", "Loud sounds"],
+        note: "Dim light, quiet, hydrate."
+    },
+    coldFlu: {
+        breakActivities: ["🛏️ Rest 10 min", "🍵 Warm drink", "💧 Hydrate", "👃 Gentle breathing"],
+        avoidActivities: ["Physical exertion", "Cold air"],
+        note: "Prioritize rest. Short sessions."
+    },
+    soreMuscles: {
+        breakActivities: ["🧘 Gentle stretch", "🫖 Heat (warm towel)", "💆 Self-massage", "👀 Posture check"],
+        avoidActivities: ["Intense cardio", "Heavy lifting"],
+        note: "Stretch, warm compress, rest."
+    },
+    injured: {
+        breakActivities: ["🛏️ Rest", "💧 Hydrate", "🧘 Breathing only", "👀 Mind work (no movement)"],
+        avoidActivities: ["Any physical activity"],
+        note: "Complete rest. Focus on recovery."
+    }
 };
 
 const BODY_CONDITIONS = {
