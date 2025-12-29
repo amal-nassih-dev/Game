@@ -1,78 +1,78 @@
 // planning.js
-function showPlanningForm(onDone){
+function showPlanningForm(onDone) {
     clearUI();
     setProgress();
 
     const moodBoost = dayMeta.mood ? MOOD_THEMES[dayMeta.mood].activityBoost : 1.0;
-    
+
     document.getElementById("text").innerHTML = `⏱️ Gentle planning`;
     document.getElementById("subtext").innerHTML = `Check schedule, calculate time, reserve rest, choose focus sessions<br><span class="note">Activity duration adjusted for your mood (${Math.round(moodBoost * 100)}%)</span>`;
 
-  const c = document.getElementById("checklist");
+    const c = document.getElementById("checklist");
 
-  const f1 = document.createElement("div");
-  f1.className = "field";
-  f1.innerHTML = `
+    const f1 = document.createElement("div");
+    f1.className = "field";
+    f1.innerHTML = `
     <label>Key commitments today (time blocks)</label>
     <textarea id="plan-commit"></textarea>
   `;
 
-  const f2 = document.createElement("div");
-  f2.className = "field";
-  f2.innerHTML = `
+    const f2 = document.createElement("div");
+    f2.className = "field";
+    f2.innerHTML = `
     <label>Rest & breaks reserved (describe)</label>
     <textarea id="plan-rest"></textarea>
   `;
 
-  const f3 = document.createElement("div");
-  f3.className = "field";
-  f3.innerHTML = `
+    const f3 = document.createElement("div");
+    f3.className = "field";
+    f3.innerHTML = `
     <label>Top 3 outcomes for today</label>
     <textarea id="plan-outcomes"></textarea>
   `;
 
-  c.append(f1, f2, f3);
+    c.append(f1, f2, f3);
 
-  const wrapper = document.createElement("div");
-  wrapper.className = "field";
-  wrapper.innerHTML = `<label>Add your focus subjects (optional)</label>`;
+    const wrapper = document.createElement("div");
+    wrapper.className = "field";
+    wrapper.innerHTML = `<label>Add your focus subjects (optional)</label>`;
 
-  const list = document.createElement("div");
-  list.id = "custom-list";
+    const list = document.createElement("div");
+    list.id = "custom-list";
 
-  const addRow = document.createElement("div");
-  addRow.className = "row";
-  addRow.innerHTML = `
+    const addRow = document.createElement("div");
+    addRow.className = "row";
+    addRow.innerHTML = `
     <input type="text" id="cs-name" placeholder="Subject name (e.g., 🟡 Portfolio)">
     <textarea id="cs-tasks" placeholder="Checklist items, one per line"></textarea>
   `;
 
-  const addBtn = button("Add Subject", () => {
-    const name = (document.getElementById("cs-name").value || "").trim();
-    const tasks = (document.getElementById("cs-tasks").value || "")
-      .split("\n")
-      .map(s => s.trim())
-      .filter(Boolean);
+    const addBtn = button("Add Subject", () => {
+        const name = (document.getElementById("cs-name").value || "").trim();
+        const tasks = (document.getElementById("cs-tasks").value || "")
+            .split("\n")
+            .map(s => s.trim())
+            .filter(Boolean);
 
-    if (!name || tasks.length === 0) return;
+        if (!name || tasks.length === 0) return;
 
-    dayMeta.customSubjects.push({ name, checklist: tasks });
-    renderCustomList(list);
+        dayMeta.customSubjects.push({ name, checklist: tasks });
+        renderCustomList(list);
 
-    document.getElementById("cs-name").value = "";
-    document.getElementById("cs-tasks").value = "";
-  }, "secondary");
+        document.getElementById("cs-name").value = "";
+        document.getElementById("cs-tasks").value = "";
+    }, "secondary");
 
-  const res = document.getElementById("result");
+    const res = document.getElementById("result");
     res.style.display = "block";
     res.innerHTML = "";
 
-  wrapper.append(addRow, addBtn, list);
-  c.appendChild(wrapper);
+    wrapper.append(addRow, addBtn, list);
+    c.appendChild(wrapper);
 
-  renderCustomList(list);
+    renderCustomList(list);
 
-   document.getElementById("buttons").appendChild(
+    document.getElementById("buttons").appendChild(
         button("Continue", () => {
             addNote({ type: "planning", title: "Planning completed", content: "Ready for focus sessions" });
             if (typeof saveAppState === "function") saveAppState();
@@ -81,35 +81,35 @@ function showPlanningForm(onDone){
     );
 }
 
-function renderCustomList(container){
-  container.innerHTML = "";
+function renderCustomList(container) {
+    container.innerHTML = "";
 
-  if (dayMeta.customSubjects.length === 0) {
-    container.innerHTML = `
+    if (dayMeta.customSubjects.length === 0) {
+        container.innerHTML = `
       <div class="note">No custom subjects added yet.</div>
     `;
-    return;
-  }
+        return;
+    }
 
-  dayMeta.customSubjects.forEach((s, idx) => {
-    const item = document.createElement("div");
-    item.className = "checklist-item";
-    item.innerHTML = `
+    dayMeta.customSubjects.forEach((s, idx) => {
+        const item = document.createElement("div");
+        item.className = "checklist-item";
+        item.innerHTML = `
       <span>${s.name} — ${s.checklist.length} items</span>
     `;
 
-    const rm = button(
-      "Remove",
-      () => {
-        dayMeta.customSubjects.splice(idx, 1);
-        renderCustomList(container);
-      },
-      "ghost"
-    );
+        const rm = button(
+            "Remove",
+            () => {
+                dayMeta.customSubjects.splice(idx, 1);
+                renderCustomList(container);
+            },
+            "ghost"
+        );
 
-    item.appendChild(rm);
-    container.appendChild(item);
-  });
+        item.appendChild(rm);
+        container.appendChild(item);
+    });
 }
 
 function showMoodSelector(onDone) {
@@ -146,7 +146,7 @@ function showMoodSelector(onDone) {
             applyMoodTheme(key);
             addNote({ type: "mood", title: "Mood selected", content: mood.label });
             if (typeof saveAppState === "function") saveAppState();
-            
+
             // Continue to planning
             showPlanningForm(onDone);
         };
@@ -157,13 +157,13 @@ function showMoodSelector(onDone) {
 function applyMoodTheme(moodKey) {
     const mood = MOOD_THEMES[moodKey];
     const root = document.documentElement;
-    
+
     // Apply CSS variables
     root.style.setProperty("--primary", mood.primary);
     root.style.setProperty("--accent", mood.accent);
     root.style.setProperty("--bg", mood.bg);
     root.style.setProperty("--card", mood.card);
-    
+
     // Save to localStorage so theme persists
     localStorage.setItem("userMood", moodKey);
 }
@@ -183,4 +183,37 @@ function hexToRgb(hex) {
         parseInt(result[2], 16),
         parseInt(result[3], 16)
     ] : [0, 0, 0];
+}
+
+function applyBodyCondition(bodyKey) {
+    if (!bodyKey || !BODY_CONDITIONS[bodyKey]) return;
+    dayMeta.bodyCondition = bodyKey;
+    // store for persistence
+    localStorage.setItem("userBodyCondition", bodyKey);
+
+    // show a subtle note/notification in UI (non-blocking)
+    const note = BODY_CONDITIONS[bodyKey].note || "";
+    if (note) {
+        const res = document.getElementById("result");
+        if (res) {
+            res.style.display = "block";
+            const info = document.createElement("div");
+            info.className = "note";
+            info.style.marginTop = "8px";
+            info.innerText = `Body: ${BODY_CONDITIONS[bodyKey].label} — ${note}`;
+            // remove previous body-note if any
+            const prev = res.querySelector(".body-note");
+            if (prev) prev.remove();
+            info.classList.add("body-note");
+            res.appendChild(info);
+        }
+    }
+}
+
+function loadBodyCondition() {
+    const saved = localStorage.getItem("userBodyCondition");
+    if (saved && BODY_CONDITIONS[saved]) {
+        dayMeta.bodyCondition = saved;
+        applyBodyCondition(saved);
+    }
 }

@@ -39,6 +39,18 @@ function askProfile(onDone) {
         <option value="overwhelmed">😰 Overwhelmed</option>
       </select>
     </div>
+
+    <div class="field">
+      <label>How does your body feel?</label>
+      <select id="body-select">
+        <option value="healthy">🙂 Healthy / fine</option>
+         <option value="tiredBody">😓 Tired / heavy</option>
+        <option value="headache">🤕 Headache / sensitive</option>
+        <option value="coldFlu">🤒 Cold / flu</option>
+        <option value="soreMuscles">🦵 Sore muscles</option>
+        <option value="injured">🩹 Injured / recovering</option>
+      </select>
+    </div>
   `;
     c.appendChild(row);
 
@@ -48,21 +60,23 @@ function askProfile(onDone) {
             const energy = Number(document.getElementById("energy").value || 6);
             const fh = Number(document.getElementById("focusHours").value || 4);
             const moodVal = (document.getElementById("mood-select").value || "").trim();
+            const bodyVal = (document.getElementById("body-select").value || "healthy").trim();
 
             if (!moodVal) {
                 alert("Please select a mood to continue");
                 return;
             }
 
+
             focusHours = Math.max(1, Math.min(10, fh));
             dayMeta.userProfile = { name, energy };
             dayMeta.focusHours = focusHours;
             dayMeta.mood = moodVal;
+            dayMeta.bodyCondition = bodyVal;             // Apply mood theme immediately
 
-            // Apply mood theme immediately
-            if (typeof applyMoodTheme === "function") {
-                applyMoodTheme(moodVal);
-            }
+            if (typeof applyMoodTheme === "function") applyMoodTheme(moodVal);
+            if (typeof applyBodyCondition === "function") applyBodyCondition(bodyVal);
+
 
             addNote({
                 type: "profile",
@@ -90,8 +104,8 @@ function showSetup(onDone) {
     f1.innerHTML = `
         <label>Fasting today?</label>
         <select id="cfg-fasting" onchange="document.getElementById('meals-section').style.display = this.value === 'false' ? 'block' : 'none';">
-            <option value="false"${!appConfig.fasting?" selected":""}>No</option>
-            <option value="true"${appConfig.fasting?" selected":""}>Yes (Ramadan)</option>
+            <option value="false"${!appConfig.fasting ? " selected" : ""}>No</option>
+            <option value="true"${appConfig.fasting ? " selected" : ""}>Yes (Ramadan)</option>
         </select>
     `;
     c.appendChild(f1);
@@ -122,7 +136,7 @@ function showSetup(onDone) {
     const mealsList = document.createElement("div");
     mealsList.id = "meals-list";
     mealsList.style = "display:flex;flex-direction:column;gap:6px;";
-    
+
     (appConfig.meals || []).forEach(m => {
         const row = document.createElement("div");
         row.style = "display:flex;gap:6px;align-items:center;";
@@ -133,7 +147,7 @@ function showSetup(onDone) {
         `;
         mealsList.appendChild(row);
     });
-    
+
     f4.appendChild(mealsList);
     c.appendChild(f4);
 
@@ -181,14 +195,14 @@ function renderSubjectsEditor(container) {
         row.dataset.idx = idx;
         const catVal = (appConfig.categories && appConfig.categories[sub.name]) || "focus";
         row.innerHTML = `
-            <input data-k="name" type="text" placeholder="Subject name" value="${(sub.name||"").replace(/"/g,'&quot;')}">
+            <input data-k="name" type="text" placeholder="Subject name" value="${(sub.name || "").replace(/"/g, '&quot;')}">
             <select data-k="cat">
-                <option value="focus"${catVal==="focus"?" selected":""}>Focus</option>
-                <option value="learning"${catVal==="learning"?" selected":""}>Learning</option>
-                <option value="faith"${catVal==="faith"?" selected":""}>Faith</option>
-                <option value="health"${catVal==="health"?" selected":""}>Health</option>
+                <option value="focus"${catVal === "focus" ? " selected" : ""}>Focus</option>
+                <option value="learning"${catVal === "learning" ? " selected" : ""}>Learning</option>
+                <option value="faith"${catVal === "faith" ? " selected" : ""}>Faith</option>
+                <option value="health"${catVal === "health" ? " selected" : ""}>Health</option>
             </select>
-            <textarea data-k="tasks" placeholder="Checklist (one per line)">${(sub.checklist||[]).join("\n")}</textarea>
+            <textarea data-k="tasks" placeholder="Checklist (one per line)">${(sub.checklist || []).join("\n")}</textarea>
             <div style="display:flex;gap:6px;margin-top:6px;">
               <button type="button" data-action="remove">Remove</button>
             </div>
@@ -225,7 +239,7 @@ function collectAndSaveSubjects() {
         if (!name) return;
         const cat = r.querySelector('select[data-k="cat"]').value || "focus";
         const tasks = (r.querySelector('textarea[data-k="tasks"]').value || "")
-            .split("\n").map(s=>s.trim()).filter(Boolean);
+            .split("\n").map(s => s.trim()).filter(Boolean);
         newBase.push({ name, checklist: tasks });
         appConfig.categories = appConfig.categories || {};
         appConfig.categories[name] = cat;

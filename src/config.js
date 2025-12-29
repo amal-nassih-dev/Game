@@ -84,6 +84,39 @@ const MOOD_ACTIVITIES = {
     ]
 };
 
+const BODY_CONDITIONS = {
+    healthy: {
+        label: "Healthy / fine",
+        focusMultiplier: 1.0,
+        note: "No changes needed."
+    },
+    tiredBody: {
+        label: "Tired / heavy legs",
+        focusMultiplier: 0.8,
+        note: "Shorter focus blocks, more breaks recommended"
+    },
+    headache: {
+        label: "Headache / light sensitivity",
+        focusMultiplier: 0.6,
+        note: "Prefer short low-cognitive tasks and gentle breaks"
+    },
+    coldFlu: {
+        label: "Cold / flu symptoms",
+        focusMultiplier: 0.5,
+        note: "Prioritize rest, reduce intensity and duration"
+    },
+    soreMuscles: {
+        label: "Sore muscles / pain",
+        focusMultiplier: 0.7,
+        note: "Avoid heavy physical tasks; include gentle stretching"
+    },
+    injured: {
+        label: "Injured / recovering",
+        focusMultiplier: 0.5,
+        note: "Keep sessions very short and restorative"
+    }
+};
+
 // ... rest of config.js stays the same ...
 const affirmationsArabic = [
     "Ana kafiya b rassi.", "Ma khasnich nkon kamla bach nkon mzyana.",

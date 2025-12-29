@@ -27,14 +27,19 @@ function buildSessionsFromDice() {
     const perc = allocatePercents(all);
     sessions = []; sessionIdCounter = 1;
     dayMeta.dice = {};
-    
+
     // Get mood boost multiplier
     const moodBoost = dayMeta.mood ? MOOD_THEMES[dayMeta.mood].activityBoost : 1.0;
-    
+    // Get body condition multiplier (reduces or keeps time)
+    const bodyMult = dayMeta.bodyCondition ? (BODY_CONDITIONS[dayMeta.bodyCondition]?.focusMultiplier || 1.0) : 1.0;
+
+    // Combined multiplier (both affect planned minutes)
+    const combinedMultiplier = moodBoost * bodyMult;
+
     for (let i = 0; i < all.length; i++) {
         const p = perc[i];
         dayMeta.dice[all[i].name] = p;
-        const totalMins = Math.round(dayMeta.focusHours * 60 * p / 100 * moodBoost);
+        const totalMins = Math.round(dayMeta.focusHours * 60 * p / 100 * combinedMultiplier);
         const chunks = clampSessionMinutes(totalMins);
         chunks.forEach(m => sessions.push({ id: sessionIdCounter++, name: all[i].name, checklist: all[i].checklist, minutes: m }));
     }
@@ -44,6 +49,7 @@ function buildSessionsFromDice() {
         [sessions[i], sessions[j]] = [sessions[j], sessions[i]];
     }
 }
+
 function distributeWaves() {
     waves = { morning: [], afternoon: [], night: [] };
     const ifFasting = appConfig.fasting;
