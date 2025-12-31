@@ -217,5 +217,21 @@ function restartDay(hardReload = true) {
     location.reload();
   }
 }
+function createBoostEnergyButton() {
+  if (document.getElementById("boost-btn")) return;
 
+  const btn = document.createElement("button");
+  btn.id = "boost-btn";
+  btn.innerText = "⚡ Boost Energy";
+
+  btn.style.position = "fixed";
+  btn.style.zIndex = "9998";
+
+  btn.onclick = () => {
+    localStorage.setItem("forceStep0", "1");
+    window.location.href = "src/energy.html";
+  };
+
+  document.body.appendChild(btn);
+}
 window.restartDay = restartDay;
