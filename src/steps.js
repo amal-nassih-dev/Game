@@ -220,6 +220,17 @@ function stepPause() {
     startTimer(pauseDur, next);
 }
 
+function stepTry() {
+    const pauseDur = getPauseDurationByMood();
+    const pauseActivity = pickActivityByMood("pause") || "🌬️ Breathe";
+    render({
+        text: pauseActivity,
+        subtext: `<span class="pill">Good Job My lady now go dance </span>`, center: true 
+    });
+    startTimer(pauseDur, next);
+}
+
+
 // Case 19: Energy reset
 function stepEnergyReset() {
     if (appConfig.fasting && isBeforeIftar()) {

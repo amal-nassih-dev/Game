@@ -408,24 +408,25 @@ const energyStops = ENERGY_STOPS.calm;
 const baseFocusSubjects = [
     {
         name: "🔵 Job Search", checklist: [
-            "Explore Moroccan freelancing platforms and profiles",
-            "See how BI/data engineers promote their skills",
-            "Identify 1–2 projects to work on for portfolio",
-            "Check LinkedIn/Indeed for job postings / required skills"
+           "Update resume/CV",
+           "Identify 3 target companies",
+           "Write down what you are bad at and good at you should share that with me",
+           "see what those companies are looking for in candidates"
         ]
     },
     {
         name: "🟣 Skill Improvement", checklist: [
-            "Review job description for BI/data engineer",
-            "Identify 1–2 key skills to learn",
-            "Small hands-on task (SQL, Python, visualization)",
-            "Document what you learned"
+            "Relational dbs vs non-relational dbs",
+            "Start a course for a relational db like Postgres or MySql",
+            "install it in your local and practice basic queries",
+            "Start learning about indexes and optimizations",
+            "Document what you learned and share it as mini blog in the discord channel"
         ]
     },
     {
         name: "🟢 Problem Solving (DSA)", checklist: [
-            "Pick 1 DSA problem", "Understand problem requirements",
-            "Plan brute-force solution", "Optimize solution", "Note confusion points"
+            "Go throught this https://www.youtube.com/watch?v=PieZjz2Pyhw part of it",
+            "explain in 1 line what you have learned and what technique you could use for later"
         ]
     }
 ];
@@ -451,7 +452,6 @@ const knowledgeQuestions = [
 const curiosityPrompts = [
     "What would happen if humans could photosynthesize like plants?",
     "Why do some animals see colors differently than humans?",
-    "How do trees “talk” to each other underground ?",
     "Pick a random tech acronym you saw today. What does it stand for and why does it matter?"
 ];
 const reflectionQuestions = [
@@ -473,15 +473,15 @@ let appConfig = {
     iftarTime: "18:30",
     suhoorTime: "05:30",
     meals: [
-        { label: "Breakfast", time: "08:30", macro: "Protein + fiber + fruit" },
-        { label: "Lunch", time: "13:30", macro: "Lean protein + complex carbs + veggies" },
-        { label: "Dinner", time: "19:30", macro: "Balanced plate; hydrate well" }
+        { label: "Breakfast", time: "08:30", macro: "Dirilk xi kas t atay m3a khobz w frmaj w xi danone" },
+        { label: "Lunch", time: "13:30", macro: "protein + veggies + fruits" },
+        { label: "Dinner", time: "19:30", macro: "good plate, hydrate well" }
     ],
-    foodChallenges: ["2 fruits", "2 bottles water", "No refined sugar at lunch"],
+    foodChallenges: ["2 fruits", "2 bottles water", "No refined sugar", "No fried food"],
     categories: {
-        "🔵 Job Search": "focus",
+        "🔵 Job Search": "work",
         "🟣 Skill Improvement": "learning",
-        "🟢 Problem Solving (DSA)": "focus",
+        "🟢 Problem Solving (DSA)": "learning",
         "📖 Quran memorization": "faith",
         "📖 Quran reading + Adkar Sabah": "faith"
     },

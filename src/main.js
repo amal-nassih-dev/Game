@@ -10,26 +10,26 @@ function next() {
 
     switch (stepIndex) {
         case 1: stepGrounding(); break;
-        case 2: stepSilence(); break;
+        case 2: stepAffirmations(); break;
         case 3: stepBreathing(); break;
         case 4: stepMorningWalk(); break;
-        case 5: stepAffirmations(); break;
-        case 6: stepMorningAudio(); break;
-        case 7: stepTransition(); break;
-        case 8: stepQuranMemo(); break;
-        case 9: stepQuranReading(); break;
-        case 10: stepMoodSelector(); break;
-        case 11: stepDiceRoller(); break;
-        case 12: stepMorningWave(); break;
-        case 13: stepBreak(); break;
-        case 14: stepLunch(); break;
-        case 15: stepAfternoonWave(); break;
-        case 16: stepWriting(); break;
-        case 17: stepResearch(); break;
-        case 18: stepPause(); break;
+        case 5: stepTransition(); break;
+        case 6: stepQuranMemo(); break;
+        case 7: stepQuranReading(); break;
+        case 8: stepMoodSelector(); break;
+        case 9: stepDiceRoller(); break;
+        case 10: stepResearch(); break;
+        case 11: stepMorningWave(); break;
+        case 12: stepBreak(); break;
+        case 13: stepLunch(); break;
+        case 14: stepAfternoonWave(); break;
+        case 15: stepWriting(); break;
+        case 16: stepPause(); break;
+        case 17: stepEnergyReset(); break;
+        case 18: stepEvening(); break;
         case 19: stepEnergyReset(); break;
-        case 20: stepEvening(); break;
-        case 21: stepNightWave(); break;
+        case 20: stepNightWave(); break;
+        case 21: stepTry(); break;
         case 22: stepAffirmationReview(); break;
         case 23: stepJournalChallenge(); break;
         case 24: stepJournalWins(); break;
@@ -72,7 +72,7 @@ function next() {
 
     // **RESTORE MOOD THEME BEFORE RENDERING**
     if (dayMeta.mood && typeof applyMoodTheme === "function") {
-       // applyMoodTheme(dayMeta.mood);
+        // applyMoodTheme(dayMeta.mood);
     }
 
     // **RESTORE BODY CONDITION BEFORE RENDERING**
@@ -100,26 +100,26 @@ function renderCurrentStep() {
 
     switch (step) {
         case 1: restoreGrounding(); break;
-        case 2: restoreSilence(); break;
-        case 3: render({ text: "🌬️ Deep breathing (6 times)", subtext: `<span class="note">Inhale 4, hold 2, exhale 6.</span>`, buttons: [{ label: "Done", action: next }] }); break;
+        case 2: stepAffirmations(); break;
+        case 3: stepBreathing(); break;
         case 4: stepMorningWalk(); break;
-        case 5: stepAffirmations(); break;
-        case 6: restoreMorningAudio(); break;
-        case 7: stepTransition(); break;
-        case 8: restoreQuranMemo(); break;
-        case 9: restoreQuranReading(); break;
-        case 10: stepMoodSelector(); break;
-        case 11: stepDiceRoller(); break;
-        case 12: stepMorningWave(); break;
-        case 13: restoreBreak(); break;
-        case 14: stepLunch(); break;
-        case 15: stepAfternoonWave(); break;
-        case 16: restoreWriting(); break;
-        case 17: restoreResearch(); break;
-        case 18: restorePause(); break;
+        case 5: stepTransition(); break;
+        case 6: restoreQuranMemo(); break;
+        case 7: restoreQuranReading(); break;
+        case 8: stepMoodSelector(); break;
+        case 9: stepDiceRoller(); break;
+        case 10: restoreResearch(); break;
+        case 11: stepMorningWave(); break;
+        case 12: restoreBreak(); break;
+        case 13: stepLunch(); break;
+        case 14: stepAfternoonWave(); break;
+        case 15: restoreWriting(); break;
+        case 16: restorePause(); break;
+        case 17: stepEnergyReset(); break;
+        case 18: restoreEvening(); break;
         case 19: stepEnergyReset(); break;
-        case 20: restoreEvening(); break;
-        case 21: stepNightWave(); break;
+        case 20: stepNightWave(); break;
+        case 21: stepTry(); break;
         case 22: stepAffirmationReview(); break;
         case 23: stepJournalChallenge(); break;
         case 24: stepJournalWins(); break;
@@ -128,4 +128,5 @@ function renderCurrentStep() {
         case 27: stepEndOfDay(); break;
         default: showDownload(); break;
     }
+
 }
