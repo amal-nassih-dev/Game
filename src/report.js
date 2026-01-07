@@ -3,7 +3,7 @@ function buildTxtSummary() {
     const lines = [];
     const now = new Date();
 
-    lines.push("Dark Blue Reset – Day 1");
+    lines.push("The New Journey – Day 1");
     lines.push(`Date: ${now.toLocaleString()}`);
 
     // Profile

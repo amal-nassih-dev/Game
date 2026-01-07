@@ -43,9 +43,9 @@ function next() {
 (function init() {
     const h = new Date().getHours();
     const title = document.getElementById("title");
-    if (h < 12) title.innerHTML = "Reset – Morning";
-    else if (h < 18) title.innerHTML = "Reset – Afternoon";
-    else title.innerHTML = "Reset – Night";
+    if (h < 12) title.innerHTML = "The Journey – Morning";
+    else if (h < 18) title.innerHTML = "The Journey – Afternoon";
+    else title.innerHTML = "The Journey – Night";
 
 
     // Restore last saved state for today (if any)
