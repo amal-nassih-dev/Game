@@ -47,6 +47,9 @@ function render({ text = "", subtext = "", buttons = [], showDice = false, resul
             btnWrap.appendChild(btn);
         });
     }
+    if (typeof updateAzkarButton === "function") {
+        updateAzkarButton();
+    }
 }
 
 function button(label, action, variant) {
@@ -128,7 +131,7 @@ function createRestartButton() {
   btn.innerText = "🔄 Restart Day";
   btn.onclick = () => {
     if (confirm("Are you sure you want to restart? All progress will be lost.")) {
-      restartDay(true);
+      restartDay(false);
     }
   };
   document.body.appendChild(btn);
@@ -193,25 +196,27 @@ function restartDay(hardReload = true) {
 
     // 4) Either hard reload (cleanest) or soft restart (re-render)
     if (hardReload) {
-      location.reload();
-    } else {
-      // Soft restart: clear UI and go back to the first screen
-      if (typeof clearUI === "function") clearUI();
-      const title = document.getElementById("title");
-      if (title) {
-        const h = new Date().getHours();
-        title.innerHTML = h < 12 ? "Reset – Morning" : (h < 18 ? "Reset – Afternoon" : "Reset – Night");
-      }
-      if (typeof setProgress === "function") setProgress();
-      // Start profile → setup flow
-      if (typeof askProfile === "function") {
-        askProfile(() => {
-          if (typeof showSetup === "function") {
-            showSetup(() => { stepIndex = 0; if (typeof next === "function") next(); });
-          }
-        });
-      }
+      if (typeof clearSavedState === "function") clearSavedState();
+      dayMeta.startTs = new Date(0).toISOString();
+      location.href = location.pathname;
+      return;
+    }else {
+  // 🧼 Soft restart (no reload)
+       clearUI();
+
+       stepIndex = 0;
+       timerRemaining = 0;
+       timerPaused = false;
+
+       if (typeof setProgress === "function") setProgress();
+       askProfile(() => {
+         showSetup(() => {
+           stepIndex = 0;
+           next();
+         });
+       });
     }
+
   } catch (e) {
     // As a fallback, force reload
     location.reload();
@@ -250,3 +255,21 @@ function boostEnergy() {
 
 window.boostEnergy = boostEnergy;
 window.restartDay = restartDay;
+function updateAzkarButton() {
+  const btn = document.getElementById("azkar-btn");
+  if (!btn) return;
+
+  if (isEveningTime()) {
+    btn.style.display = "inline-flex";
+    btn.onclick = () => {
+      clearUI();
+      render({
+        text: "🕌 Adkar Al-Masa2",
+        subtext: "Read calmly – 10 minutes"
+      });
+      startTimer(10, next);
+    };
+  } else {
+    btn.style.display = "none";
+  }
+}

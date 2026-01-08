@@ -66,26 +66,31 @@ function stateStorageKey() {
 }
 
 function saveAppState() {
-    try {
-        const payload = {
-            stepIndex,
-            dayMeta,  // This now includes mood & bodyCondition
-            sessions,
-            waves,
-            runningQueue,
-            runningIndex,
-            activeSession,
-            sessionLogs,
-            mealStatus,
-            // timer snapshot (not exact running tick)
-            timerRemaining,
-            timerPaused
-        };
-        localStorage.setItem(stateStorageKey(), JSON.stringify(payload));
-        console.log("State saved with mood:", dayMeta.mood, "body:", dayMeta.bodyCondition);
-    } catch (e) { console.warn("saveAppState failed", e); }
-}
+  try {
+    const payload = {
+      stepIndex,
+      dayMeta,
+      sessions,
+      waves,
+      runningQueue,
+      runningIndex,
+      activeSession,
+      sessionLogs,
+      mealStatus,
+      timerRemaining,
+      timerPaused
+    };
 
+    const json = JSON.stringify(payload);
+    localStorage.setItem(stateStorageKey(), json);
+
+    // 🔥 NEW: save state in URL
+    const encoded = btoa(encodeURIComponent(json));
+    history.replaceState(null, "", `?state=${encoded}`);
+  } catch (e) {
+    console.warn("saveAppState failed", e);
+  }
+}
 function loadAppState() {
     try {
         const raw = localStorage.getItem(stateStorageKey());
@@ -99,6 +104,7 @@ function clearSavedState() {
 }
 
 // autosave on unload
-window.addEventListener("beforeunload", () => {
+window.addEventListener("pagehide", () => {
     saveAppState();
 });
+

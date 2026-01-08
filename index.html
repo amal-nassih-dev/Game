@@ -36,7 +36,17 @@
                         <button class="ghost action-btn" onclick="restartDay(true)">Restart</button>
                         <button class="secondary action-btn"
                             onclick="if(window.saveAppState) saveAppState()">Save</button>
-                        <button class="action-btn" onclick="boostEnergy()">⚡ Boost Energy</button>
+                        <button class="action-btn primary" onclick="boostEnergy()">
+                            ⚡ Boost Energy
+                        </button>
+                        <button class="action-btn ghost" id="azkar-btn" style="display:none">
+                            🕌 Adkar Masa2
+                        </button>
+                        <button class="action-btn primary" onclick="openOther()">
+                            📌 Mandatory Task
+                        </button>
+
+
                     </div>
                 </div>
             </aside>

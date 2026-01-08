@@ -429,3 +429,9 @@ function removeFloatingNext() {
     document.getElementById("app").classList.remove("has-floating-next");
 }
 
+function isEveningTime() {
+  if (!appConfig.fasting) return false;
+  const now = new Date();
+  const maghrib = timeStrToDate(appConfig.iftarTime);
+  return now >= maghrib;
+}

@@ -1,4 +1,30 @@
 // Main flow main.js
+let returnStepAfterWork = null;
+
+function loadStateFromURL() {
+  const p = new URLSearchParams(location.search);
+  const encoded = p.get("state");
+  if (!encoded) return null;
+
+  try {
+    const json = decodeURIComponent(atob(encoded));
+    return JSON.parse(json);
+  } catch {
+    return null;
+  }
+}
+function isSameDay(ts) {
+  if (!ts) return false;
+  const d1 = new Date(ts);
+  const d2 = new Date();
+  return (
+    d1.getFullYear() === d2.getFullYear() &&
+    d1.getMonth() === d2.getMonth() &&
+    d1.getDate() === d2.getDate()
+  );
+}
+
+
 function next() {
     if (mainFlowLocked) return;
     mainFlowLocked = true;
@@ -47,10 +73,23 @@ function next() {
     else if (h < 18) title.innerHTML = "The Journey – Afternoon";
     else title.innerHTML = "The Journey – Night";
 
+    // 🔥 Restore state: URL → localStorage
+    let saved = null;
+    const urlState = loadStateFromURL();
+    if (urlState && isSameDay(urlState.dayMeta?.startTs)) {
+      saved = urlState;
+      console.log("Restored state from URL (same day)");
+    } else {
+      const local = (typeof loadAppState === "function") ? loadAppState() : null;
+      if (local && isSameDay(local.dayMeta?.startTs)) {
+        saved = local;
+        console.log("Restored state from localStorage (same day)");
+      } else {
+        console.log("New day detected → starting fresh");
+      }
+    }
 
-    // Restore last saved state for today (if any)
-    const saved = (typeof loadAppState === "function") ? loadAppState() : null;
-    console.log("Saved state:", saved);
+
 
     if (saved) {
         if (typeof saved.dayMeta === "object") dayMeta = Object.assign(dayMeta, saved.dayMeta);
@@ -94,6 +133,59 @@ function next() {
         });
     }
 })();
+
+function openOther() {
+  returnStepAfterWork = stepIndex;
+  clearUI();
+  render({
+    text: "📌 Essential Task",
+    subtext: "Take care of this, your flow will be waiting"
+  });
+
+  const c = document.getElementById("checklist");
+
+  c.innerHTML = `
+    <div class="field">
+      <label>Duration (minutes)</label>
+      <input id="fw-min" type="number" min="5" value="25">
+    </div>
+    <div class="field">
+      <label>What do you have to do?</label>
+      <textarea id="fw-notes"></textarea>
+    </div>
+  `;
+
+  const btns = document.getElementById("buttons");
+  btns.innerHTML = "";
+
+  // ▶️ Start
+  btns.appendChild(
+    button("Start", () => {
+      const mins = Number(document.getElementById("fw-min").value || 25);
+      startTimer(mins);
+    })
+  );
+
+  // ✅ Done 
+  btns.appendChild(
+    button("Done", () => {
+      const notesEl = document.getElementById("fw-notes");
+      if (typeof stopTimer === "function") stopTimer(); 
+      addNote({
+        type: "free-other",
+        title: "Obligatory Task",
+        content: notesEl.value || ""
+      });
+
+      if (returnStepAfterWork !== null) {
+        stepIndex = returnStepAfterWork;
+        returnStepAfterWork = null;
+        renderCurrentStep();
+      }
+    }, "secondary")
+  );
+}
+
 
 function renderCurrentStep() {
     const step = stepIndex;
