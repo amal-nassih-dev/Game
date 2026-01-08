@@ -407,19 +407,22 @@ const energyStops = ENERGY_STOPS.calm;
 // ... rest of config.js...
 const baseFocusSubjects = [
     {
-        name: "🔵 Job Search", checklist: [
-           "Update resume/CV",
-           "Identify 3 target companies",
-           "Write down what you are bad at and good at you should share that with me",
-           "see what those companies are looking for in candidates"
+        name: "❤︎ Job Search ♥︎", checklist: [
+           "Identify 2 target companies",
+           "See what those companies need in terms of skills and experience",
+           "look for linkedIn profiles of people working in those companies to and note what kind of projects they have worked on and the skills for those poeple",
+           "see what those companies are looking for in candidates",
+           "Prepare for common interview questions",
+           "do 5 minutes interview practice in front of a mirror and see you posture and confidence and write that down you can do a video"
         ]
     },
     {
-        name: "🟣 Skill Improvement", checklist: [
-            "Identify what you already cover vs what’s missing.",
-            "Search LinkedIn job postings related to the technology.",
-            "Identify 1–2 key skills to learn.",
-            "Compare your current expertise with market expectations.",
+        name: "𑣲Skill Improvement", checklist: [
+            "Install Python 3 and visual studio code",
+            "Create a python script and run it from the terminal",
+            "learn how you can deploy that script to run it from anywhere on your computer",
+            "Go through the basics for python functions, loops, conditionals, and data structures and write that in the script share that after in your channel",
+            "Watch a tutorial or read something NumPy and apply it in your script",
             "Document what you learned."
         ]
     },
@@ -432,9 +435,11 @@ const baseFocusSubjects = [
 ];
 
 const curiosityPrompts = [
-    "What would happen if humans needed only 4 hours of sleep instead of 8?",
-    "How would cities change if cars never existed?",
-    "How do animals “talk” to each other?",
+    "In Python What happens if I add a number to a string? Why?",
+    "What’s the difference between a list and a tuple in behavior, not definition?",
+    "Why does Python start counting from 0?",
+    "What happens if I loop over a dictionary—what exactly am I looping over?",
+    "What does None really mean, and how is it different from 0 or "
 ];
 const reflectionQuestions = [
     "How did you feel (energy, focus, emotion)?",
@@ -566,3 +571,8 @@ function getAdaptiveActivity(type) {
     return act.byMood[mood] || act.byMood.calm;
 }
 
+function getRandomCuriosityPrompt() {
+    return curiosityPrompts[
+        Math.floor(Math.random() * curiosityPrompts.length)
+    ];
+}
