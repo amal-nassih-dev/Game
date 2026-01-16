@@ -1,10 +1,10 @@
-// timer.js — time-based countdown with safe globals (no duplicate identifiers)
+// src/timer.js — time-based countdown with safe globals (no duplicate identifiers)
 (function () {
-  // Private state (no global collisions)
+  // Private state
   let handle = null;
   let paused = false;
   let remaining = 0; // seconds
-  let endAt = 0;     // epoch ms when running (ignored while paused)
+  let endAt = 0;     // epoch ms when running
 
   function saveState() {
     if (typeof window.saveAppState === "function") window.saveAppState();
@@ -16,7 +16,6 @@
     paused = false;
     remaining = 0;
     endAt = 0;
-
     const timerEl = document.getElementById("timer");
     if (timerEl) {
       timerEl.classList.remove("active");
@@ -24,18 +23,15 @@
     }
     const tc = document.getElementById("timer-controls");
     if (tc) tc.remove();
-
     saveState();
   }
 
   function ensureTimerUI() {
     const timerEl = document.getElementById("timer");
     if (!timerEl) return;
-
     if (!timerEl.querySelector("svg")) {
       const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
       svg.setAttribute("viewBox", "0 0 200 200");
-
       const bgCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
       bgCircle.setAttribute("cx", "100");
       bgCircle.setAttribute("cy", "100");
@@ -118,6 +114,8 @@
     const circumference = 565.48;
     let preEndPlayed = false;
 
+    const preEnd = (window.appConfig?.sound?.preEndSeconds ?? 120);
+
     const recomputeRemaining = () => {
       if (!paused) {
         remaining = Math.ceil((endAt - Date.now()) / 1000);
@@ -132,7 +130,7 @@
         const offset = circumference * (safeRemaining / totalSeconds);
         ring.style.strokeDashoffset = Math.max(0, offset);
       }
-      if (safeRemaining === 120 && !preEndPlayed && window.appConfig?.sound?.notifications) {
+      if (safeRemaining === preEnd && !preEndPlayed && window.appConfig?.sound?.notifications) {
         if (typeof window.playNotification === "function") window.playNotification("pre-end");
         preEndPlayed = true;
       }
@@ -141,7 +139,13 @@
         if (window.appConfig?.sound?.notifications && typeof window.playNotification === "function") {
           window.playNotification("end");
         }
-        if (typeof onEnd === "function") onEnd();
+        if (typeof onEnd === "function") {
+          if (window.REQUIRE_MANUAL_ADVANCE && typeof window.onTimerEndWrapper === "function") {
+            window.onTimerEndWrapper(onEnd);
+          } else {
+            onEnd();
+          }
+        }
       }
     };
 
@@ -149,15 +153,12 @@
     handle = setInterval(tick, 1000);
 
     document.addEventListener("visibilitychange", () => {
-      if (document.visibilityState === "visible") {
-        tick();
-      }
+      if (document.visibilityState === "visible") tick();
     });
   }
 
   function startTimer(minutes, onEnd) {
     stopTimer();
-
     const durationSec = Math.max(0, Math.round((Number(minutes) || 0) * 60));
     paused = false;
     remaining = durationSec;
@@ -169,7 +170,6 @@
       timerEl.style.display = "flex";
       timerEl.innerHTML = ""; // rebuild UI cleanly for each start
     }
-
     ensureTimerUI();
     buildTimerControls(onEnd);
     tickLoop(durationSec, onEnd);
@@ -178,30 +178,23 @@
 
   function resumeTimer(onEnd) {
     if (remaining <= 0) return;
-
     const timerEl = document.getElementById("timer");
     if (timerEl) {
       timerEl.classList.add("active");
       timerEl.style.display = "flex";
       timerEl.innerHTML = "";
     }
-
     ensureTimerUI();
     buildTimerControls(onEnd);
-
     if (!paused) {
       endAt = Date.now() + remaining * 1000;
     }
-    // Use current remaining as the total for the ring scale
     tickLoop(remaining, onEnd);
     saveState();
   }
 
-  // Expose API on window for existing callers
   window.startTimer = startTimer;
   window.stopTimer = stopTimer;
   window.resumeTimer = resumeTimer;
-
-  // Optional namespaced export
   window.AppTimer = { startTimer, stopTimer, resumeTimer };
 })();

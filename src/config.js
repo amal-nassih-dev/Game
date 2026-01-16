@@ -1,6 +1,4 @@
 // Static source data and defaults config.js
-// Static source data and defaults config.js
-
 // ===============================
 // MOOD THEMES AND ACTIVITIES (define first)
 // ===============================
@@ -18,38 +16,32 @@ const MOOD_THEMES = {
     calm: {
         label: "🧘 Calm",
         emoji: "🧘",
-
         /* Brand (very low saturation) */
         primary: "#8DA7A8",   // muted sage-teal
-        accent: "#E3BFA7",   // soft peach (less pink)
-
+        accent: "#E3BFA7",    // soft peach (less pink)
         /* Surfaces */
-        bg: "#F2EEEC",      // warm off-white (KEY FIX)
-        card: "#E6E1DE",      // subtle elevation, not teal
-
+        bg: "#F2EEEC",        // warm off-white
+        card: "#E6E1DE",      // subtle elevation
         /* Text */
-        text: "#3F3A36",     // warm charcoal (not black)
+        text: "#3F3A36",      // warm charcoal
         muted: "#7A736E",
-
         /* Semantics (CALM STYLE) */
         success: "#8FB5A3",   // desaturated green
-        warn: "#D6B58C",   // sand / clay
-        danger: "#E6C6B8",   // VERY light peach (background only)
-
+        warn: "#D6B58C",      // sand / clay
+        danger: "#E6C6B8",    // very light peach
         activityBoost: 1.0,
         description: "Balanced, regulated, steady and present"
     },
     focused: {
         label: "🎯 Focused",
         emoji: "🎯",
-        primary: "#F4A261",   // warm amber (attention anchor)
-        accent: "#FFD6A5",    // soft highlight, not loud
-        bg: "#121212",        // near-black = reduced noise
+        primary: "#F4A261",   // warm amber
+        accent: "#FFD6A5",    // soft highlight
+        bg: "#121212",        // near-black
         card: "#1E1E1E",      // IDE-like surface
         activityBoost: 1.25,
         description: "Deep attention, clarity, execution mode"
     },
-
     tired: {
         label: "😴 Tired",
         primary: "#a78bfa",
@@ -63,14 +55,13 @@ const MOOD_THEMES = {
     overwhelmed: {
         label: "🌧 Overwhelmed",
         emoji: "🌧",
-        primary: "#C77D8A",   // muted rose (safety, care)
+        primary: "#C77D8A",   // muted rose
         accent: "#E6A6B0",    // soft reassurance
         bg: "#140F12",        // cocoon-like dark
-        card: "#24171C",      // safe surface, not alarming
+        card: "#24171C",      // safe surface
         activityBoost: 0.55,
         description: "High load — simplify, ground, and slow down"
     }
-
 };
 
 const MOOD_ACTIVITIES = {
@@ -98,7 +89,8 @@ const MOOD_ACTIVITIES = {
                 "✋ Gentle hand & neck release"
             ]
         }
-    ], focused: [
+    ],
+    focused: [
         {
             type: "break",
             duration: 6,
@@ -117,8 +109,7 @@ const MOOD_ACTIVITIES = {
                 "🌬 One deep breath"
             ]
         }
-    ]
-    ,
+    ],
     tired: [
         { type: "break", duration: 20, activities: ["🛏️ Lie down for 5 min", "🥛 Drink water + light snack", "🌬️ Slow breathing + gentle stretching"] },
         { type: "pause", duration: 10, activities: ["👀 Close eyes briefly", "💆 Neck + shoulder release", "Sip water slowly"] },
@@ -144,7 +135,6 @@ const MOOD_ACTIVITIES = {
             ]
         }
     ]
-
 };
 
 const BODY_CONDITION_ACTIVITIES = {
@@ -213,18 +203,16 @@ const BODY_CONDITIONS = {
     }
 };
 
-// ...existing MOOD_THEMES, BODY_CONDITIONS, MOOD_ACTIVITIES...
-
 // ===============================
 // AFFIRMATIONS (mood-based)
 // ===============================
 const AFFIRMATIONS = {
     energetic: {
         arabic: [
-            "Rah nqder! Energy kayswel! 🔥",
-            "Nta capable d'achever kul haja! ⚡",
-            "Momentum rah f'tarafak! Keep going! 💪",
-            "Nta stronger than you think! 🚀"
+            "لديك هذه الطاقة! استخدمها بحكمة! 🔥",
+            "وجّه هذه القوة نحو أهدافك! ⚡",
+            "زخمك لا يمكن إيقافه! 💪",
+            "أنت أقوى من الأمس! 🚀",
         ],
         english: [
             "You've got this energy! Use it wisely! 🔥",
@@ -246,8 +234,7 @@ const AFFIRMATIONS = {
             "Slow and steady progress creates lasting results.",
             "My inner peace is my strength."
         ]
-    }
-    ,
+    },
     focused: {
         arabic: [
             "ذهني صافٍ، وتركيزي كامل على هذه المهمة",
@@ -261,14 +248,13 @@ const AFFIRMATIONS = {
             "Each focused minute brings me closer to my goal.",
             "I release distractions and welcome clarity."
         ]
-    }
-    ,
+    },
     tired: {
         arabic: [
-            "Chwiya chwiya. You're doing great. 💤",
-            "Rest is productive. Be kind to yourself. 🌙",
-            "Short wins count. Keep going gently. 🌱",
-            "You deserve rest AND progress. 💚"
+            "الخطوات الصغيرة ما زالت تقودك إلى الأمام. 💤",
+            "الراحة جزء من الرحلة. 🌙",
+            "لا تحتاج إلى الكمال، بل إلى التقدّم فقط. 🌱",
+            "كن لطيفًا مع نفسك اليوم. 💚"
         ],
         english: [
             "Small steps still move forward. 💤",
@@ -291,7 +277,6 @@ const AFFIRMATIONS = {
             "My breath brings me back to the present moment."
         ]
     }
-
 };
 
 // ===============================
@@ -388,13 +373,10 @@ function getAffirmationByMood(lang = "english") {
 function getEnergyStopByMoodAndBody() {
     const mood = dayMeta.mood || "calm";
     const body = dayMeta.bodyCondition || "healthy";
-
-    // Prioritize body condition if unhealthy, otherwise use mood
     if (body !== "healthy") {
         const bodyStops = BODY_STOPS[body] || BODY_STOPS.healthy;
         return bodyStops[Math.floor(Math.random() * bodyStops.length)];
     }
-
     const moodStops = ENERGY_STOPS[mood] || ENERGY_STOPS.calm;
     return moodStops[Math.floor(Math.random() * moodStops.length)];
 }
@@ -404,49 +386,72 @@ const affirmationsArabic = AFFIRMATIONS.calm.arabic;
 const affirmationsEnglish = AFFIRMATIONS.calm.english;
 const energyStops = ENERGY_STOPS.calm;
 
-// ... rest of config.js...
+// Base focus subjects
 const baseFocusSubjects = [
     {
-        name: "🔵 Job Search", checklist: [
-           "Update resume/CV",
-           "Identify 3 target companies",
-           "Write down what you are bad at and good at you should share that with me",
-           "see what those companies are looking for in candidates"
+        name: "❤︎ Java ♥︎", checklist: [
+            "Go through the courses",
+            "Practice them locally in intelliJ",
+            "See 2 to 3 java interview questions and try to answer them "
         ]
     },
     {
-        name: "🟣 Skill Improvement", checklist: [
-            "Identify what you already cover vs what’s missing.",
-            "Search LinkedIn job postings related to the technology.",
-            "Identify 1–2 key skills to learn.",
-            "Compare your current expertise with market expectations.",
+        name: "𑣲React", checklist: [
+            "Go through some of the course in Scrimba",
+            "Go through some of the course in Oreilly",
+            "Practice them locally",
             "Document what you learned."
         ]
     },
     {
         name: "🟢 Problem Solving (DSA)", checklist: [
-            "Go throught this https://www.youtube.com/watch?v=PieZjz2Pyhw part of it",
+            "Answer at least 2 questions on leetcode",
             "explain in 1 line what you have learned and what technique you could use for later"
         ]
     }
 ];
 
+// Prompts / questions
 const curiosityPrompts = [
-    "What would happen if humans needed only 4 hours of sleep instead of 8?",
-    "How would cities change if cars never existed?",
-    "How do animals “talk” to each other?",
+    "Why are default arguments in Python evaluated only once?",
+    "What actually happens under the hood when you use `with`?",
+    "Why is `is` sometimes different from `==`?",
+    "What does Python do when it can’t find a variable name?",
+    "Why are generators more memory-efficient than lists?",
+    "What happens if you modify a list while iterating over it?",
+    "Why is recursion limited in Python, and what enforces that limit?",
+    "What does it mean that everything in Python is an object?",
+    "Why does `len()` feel O(1) for lists?",
+    "What really happens when you import a module?"
 ];
+
+const knowledgeQuestions = [
+    "What trade-offs does immutability introduce?",
+    "When is caching harmful instead of helpful?",
+    "What makes a function pure, and why does it matter?",
+    "How does a hash table resolve collisions?",
+    "What problem does eventual consistency solve?",
+    "Why is tail recursion not optimized in Python?",
+    "When would you prefer composition over inheritance?",
+    "How do CPU caches affect algorithm performance?",
+    "What guarantees does ACID actually provide?",
+    "Why is lock-free programming difficult?"
+];
+
 const reflectionQuestions = [
-    "How did you feel (energy, focus, emotion)?",
-    "What worked well? What would you change next time?",
-    "Any blockers? How will you unblock them tomorrow?"
+    "What concept felt confusing at first but became clearer?",
+    "What slowed you down today?",
+    "What assumption did you make that might be wrong?",
+    "What did you learn that surprised you?",
+    "What would future-you thank you for today?"
 ];
+
 const moodMiniTasks = [
-    "👀 Look away from screen for 20 seconds",
-    "🧘 3 deep breaths",
-    "🚰 Sip water",
-    "🤸 Quick shoulder roll",
-    "🙂 Smile for 10 seconds"
+    "👂 Listen to a sound around you",
+    "🧍 Stand up and stretch your back",
+    "🌬️ Slow exhale for 5 seconds",
+    "👣 Walk for 1 minute",
+    "💧 Take one mindful sip of water"
 ];
 
 // Default app-wide config (editable in Setup)
@@ -478,9 +483,21 @@ let appConfig = {
         volume: 0.35,
         playlists: { light: [], hype: [], jazz: [], podcast: [] }
     },
+    showMealChipsInFocus: true,
+    mealChipWindowMinutes: 20,
     baseSubjectsEditable: JSON.parse(JSON.stringify(baseFocusSubjects))
 };
 
+// Day parts configuration (for dice/waves distribution)
+appConfig.dayParts = {
+    morning: { start: "06:00", end: "12:00", quotaPct: 0.40, maxMinutes: 180 },
+    afternoon: { start: "12:00", end: "18:00", quotaPct: 0.40, maxMinutes: 180 },
+    night: { start: "18:00", end: "23:59", quotaPct: 0.20, maxMinutes: 120 }
+};
+
+// ===============================
+// ADAPTIVE ACTIVITIES
+// ===============================
 const ADAPTIVE_ACTIVITIES = {
     grounding: {
         id: "grounding",
@@ -493,7 +510,6 @@ const ADAPTIVE_ACTIVITIES = {
             overwhelmed: "🫁 5-4-3-2-1 grounding exercise"
         }
     },
-
     hydration: {
         id: "hydration",
         cooldown: 90,
@@ -505,7 +521,6 @@ const ADAPTIVE_ACTIVITIES = {
             overwhelmed: "💧 Drink water + breathe"
         }
     },
-
     morningAudio: {
         id: "morningAudio",
         cooldown: 240,
@@ -517,7 +532,6 @@ const ADAPTIVE_ACTIVITIES = {
             overwhelmed: "🎧 Grounding audio / brown noise"
         }
     },
-
     creative: {
         id: "creative",
         cooldown: 360,
@@ -529,7 +543,6 @@ const ADAPTIVE_ACTIVITIES = {
             overwhelmed: "📝 Write what’s heavy, then stop"
         }
     },
-
     learningLight: {
         id: "learningLight",
         cooldown: 360,
@@ -543,8 +556,8 @@ const ADAPTIVE_ACTIVITIES = {
     }
 };
 
-let activityHistory =
-    JSON.parse(localStorage.getItem("activityHistory") || "{}");
+// Activity history (cooldowns)
+let activityHistory = JSON.parse(localStorage.getItem("activityHistory") || "{}");
 
 function markActivityDone(id) {
     activityHistory[id] = Date.now();
@@ -566,3 +579,8 @@ function getAdaptiveActivity(type) {
     return act.byMood[mood] || act.byMood.calm;
 }
 
+function getRandomCuriosityPrompt() {
+    return curiosityPrompts[
+        Math.floor(Math.random() * curiosityPrompts.length)
+    ];
+}
