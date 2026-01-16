@@ -1,14 +1,12 @@
 // ===============================
 // Step handlers
 // ===============================
-
 // Case 1: Morning grounding or hydration
 function stepGrounding() {
     const her = dayMeta.userProfile?.name ? `, ${dayMeta.userProfile.name}` : "";
     const act =
         getAdaptiveActivity("grounding") ||
         (appConfig.fasting ? "🧘‍♀️ Ground yourself (2 min)" : "💧 Drink water (2 min)");
-
     render({
         text: `${act}${her}`,
         subtext: `<span class="pill">2 minutes</span>`,
@@ -22,7 +20,6 @@ function stepGrounding() {
         center: true
     });
 }
-
 // Case 2: Silence / affirmations
 function stepAffirmations() {
     if (currentAffirmationIx < affirmationsArabic.length) {
@@ -31,7 +28,6 @@ function stepAffirmations() {
         next();
     }
 }
-
 // Case 3: Deep breathing
 function stepBreathing() {
     render({
@@ -41,7 +37,6 @@ function stepBreathing() {
         center: true
     });
 }
-
 // Case 4: Morning walk
 function stepMorningWalk() {
     render({
@@ -49,13 +44,11 @@ function stepMorningWalk() {
         subtext: `<span class="pill">15–25 minutes</span>`,
         center: true
     });
-
     const btns = document.getElementById("buttons");
     btns.appendChild(button("Walk 15 min", () => startTimer(15, next)));
     btns.appendChild(button("Walk 25 min", () => startTimer(25, next)));
     btns.appendChild(button("Sit quietly", next, "secondary"));
 }
-
 // Case 5: Transition
 function stepTransition() {
     render({
@@ -64,7 +57,6 @@ function stepTransition() {
         center: true
     });
 }
-
 // Case 6: Quran memorization
 function stepQuranMemo() {
     render({
@@ -74,7 +66,6 @@ function stepQuranMemo() {
     });
     startTimer(15, next);
 }
-
 // Case 7: Quran reading
 function stepQuranReading() {
     render({
@@ -84,7 +75,6 @@ function stepQuranReading() {
     });
     startTimer(15, () => askReflection("morning", next));
 }
-
 // Case 8: Mood selector
 function stepMoodSelector() {
     loadMoodTheme();
@@ -95,7 +85,6 @@ function stepMoodSelector() {
     });
     showMoodSelector(() => next());
 }
-
 // Case 9: Dice roller
 function stepDiceRoller() {
     render({
@@ -107,18 +96,15 @@ function stepDiceRoller() {
             action: () => {
                 buildSessionsFromDice();
                 distributeWaves();
-
                 const moodBoost = dayMeta.mood
                     ? MOOD_THEMES[dayMeta.mood].activityBoost
                     : 1.0;
-
                 const adjustedHours = (dayMeta.focusHours * moodBoost).toFixed(1);
                 const alloc = Object.keys(dayMeta.dice).map(n => {
                     const cat = categoryFor(n);
                     return `<span class="pill">${dayMeta.dice[n]}%</span>
                             <span class="cat ${categoryClass(cat)}">${n}</span>`;
                 }).join(" ");
-
                 render({
                     text: "✅ Dice results saved",
                     resultHTML: `
@@ -133,7 +119,6 @@ function stepDiceRoller() {
         center: true
     });
 }
-
 // Case 10: Research
 function stepResearch() {
     render({
@@ -143,7 +128,6 @@ function stepResearch() {
     });
     startTimer(30, next);
 }
-
 // Case 11: Morning wave
 function stepMorningWave() {
     if (!waves.morning.length) return next();
@@ -151,7 +135,6 @@ function stepMorningWave() {
         stepCuriosity({ title: "🧠 Curiosity Break" });
     });
 }
-
 // Case 12: Break
 function stepBreak() {
     const dur = getBreakDurationByMood();
@@ -166,7 +149,6 @@ function stepBreak() {
         center: true
     });
 }
-
 // Case 13: Lunch
 function stepLunch() {
     if (appConfig.fasting && isBeforeIftar()) {
@@ -188,7 +170,6 @@ function stepLunch() {
         });
     }
 }
-
 // Case 14: Afternoon wave
 function stepAfternoonWave() {
     if (!waves.afternoon.length) {
@@ -200,7 +181,6 @@ function stepAfternoonWave() {
         askReflection("afternoon", next);
     });
 }
-
 // Case 15: Writing
 function stepWriting() {
     render({
@@ -210,7 +190,6 @@ function stepWriting() {
     });
     startTimer(30, next);
 }
-
 // Case 16: Pause
 function stepPause() {
     const dur = getPauseDurationByMood();
@@ -222,21 +201,18 @@ function stepPause() {
     });
     startTimer(dur, next);
 }
-
 // Case 17 & 19: Energy reset
 function stepEnergyReset() {
     const act =
         (appConfig.fasting && isBeforeIftar())
             ? pickActivityByMood("pause") || randomEnergy()
             : pickBodyAwareActivity("break") || "🍎 Fruit + water";
-
     render({
         text: act,
         buttons: [{ label: "Done", action: next }],
         center: true
     });
 }
-
 // Case 18: Evening
 function stepEvening() {
     if (appConfig.fasting) {
@@ -256,26 +232,28 @@ function stepEvening() {
         });
     }
 }
-
-// Case 20: Night wave
+// Case 20: Night wave (fixed double run)
 function stepNightWave() {
     if (!waves.night.length) return next();
-    runWave(waves.night, next);
     runWave(waves.night, () => {
         stepCuriosity({ title: "🧠 Curiosity Break" });
+        // Respect manual advance: user clicks Next
+        if (window.REQUIRE_MANUAL_ADVANCE && typeof showFloatingNext === "function") {
+            showFloatingNext("Next", next);
+        } else {
+            next();
+        }
     });
 }
-
-// Case 21: Celebration
+// Case 21: Celebration (no auto-advance)
 function stepTry() {
     render({
         text: "💃 You did it!",
         subtext: `<span class="note">Celebrate your effort</span>`,
+        buttons: [{ label: "Next", action: next }],
         center: true
     });
-    setTimeout(next, 1200);
 }
-
 // Case 22: Affirmation review
 function stepAffirmationReview() {
     render({
@@ -285,7 +263,6 @@ function stepAffirmationReview() {
         center: true
     });
 }
-
 // Case 23–25: Journaling
 function stepJournalChallenge() {
     render({ text: "📝 One challenge + solution", center: true });
@@ -299,7 +276,6 @@ function stepJournalReflection() {
     render({ text: "📝 Mood & energy reflection", center: true });
     journalingForm("Mood, resistance, energy", next);
 }
-
 // Case 26: Congrats
 function stepCongrats() {
     render({
@@ -308,7 +284,6 @@ function stepCongrats() {
         center: true
     });
 }
-
 // Case 27: End
 function stepEndOfDay() {
     render({
@@ -317,10 +292,8 @@ function stepEndOfDay() {
     });
     endOfDayForm(() => showDownload());
 }
-
 function stepCuriosity({ title = "🤔 Curiosity Moment", autoAdvance = true } = {}) {
     const prompt = getRandomCuriosityPrompt();
-
     render({
         text: title,
         subtext: `<div class="note">${prompt}</div>`,

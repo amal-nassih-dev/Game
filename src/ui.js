@@ -1,129 +1,135 @@
 // Rendering and buttons ui.js
 
 function render({ text = "", subtext = "", buttons = [], showDice = false, resultHTML = null, center = false }) {
-    clearUI();
-    setProgress();
+  clearUI();
+  setProgress();
 
-    // Toggle on #stage, not #main
-    const stage = document.getElementById("stage");
-    if (stage) stage.classList.toggle("center-stage", !!center);
+  // Toggle on #stage, not #main
+  const stage = document.getElementById("stage");
+  if (stage) stage.classList.toggle("center-stage", !!center);
 
-    const textEl = document.getElementById("text");
-    if (textEl) textEl.innerHTML = `<div class="fade-in">${text}</div>`;
+  const textEl = document.getElementById("text");
+  if (textEl) textEl.innerHTML = `<div class="fade-in">${text}</div>`;
 
-    const subEl = document.getElementById("subtext");
-    if (subEl) subEl.innerHTML = subtext ? `<div class="fade-in">${subtext}</div>` : "";
+  const subEl = document.getElementById("subtext");
+  if (subEl) subEl.innerHTML = subtext ? `<div class="fade-in">${subtext}</div>` : "";
 
-    if (!Array.isArray(buttons) || buttons.length === 0) {
-        buttons = [{ label: "Next", action: next }];
+  if (!Array.isArray(buttons) || buttons.length === 0) {
+    buttons = [{ label: "Next", action: next }];
+  }
+
+  const diceEl = document.getElementById("dice");
+  if (diceEl) diceEl.innerText = showDice ? "🎲" : "";
+
+  if (resultHTML) {
+    const res = document.getElementById("result");
+    if (res) {
+      res.style.display = "block";
+      res.innerHTML = resultHTML;
     }
+  }
 
-    const diceEl = document.getElementById("dice");
-    if (diceEl) diceEl.innerText = showDice ? "🎲" : "";
+  renderMealBar();
 
-    if (resultHTML) {
-        const res = document.getElementById("result");
-        if (res) {
-            res.style.display = "block";
-            res.innerHTML = resultHTML;
-        }
-    }
+  const btnWrap = document.getElementById("buttons");
+  if (btnWrap) {
+    btnWrap.innerHTML = "";
+    buttons.forEach(b => {
+      const btn = document.createElement("button");
+      btn.innerText = b.label ?? "Action";
+      btn.classList.add("action-btn", "primary");
+      if (b.variant === "secondary") { btn.classList.remove("primary"); btn.classList.add("secondary"); }
+      if (b.variant === "ghost") { btn.classList.remove("primary"); btn.classList.add("ghost"); }
+      btn.onclick = () => {
+        if (typeof removeFloatingNext === "function") removeFloatingNext();
+        if (b.action) b.action();
+      };
+      if (b.label === "Next" || b.label === "Done" || b.label === "Continue") {
+        btn.classList.add("floating-next-btn");
+      }
+      btnWrap.appendChild(btn);
+    });
+  }
 
-    renderMealBar();
-
-    const btnWrap = document.getElementById("buttons");
-    if (btnWrap) {
-        btnWrap.innerHTML = "";
-        buttons.forEach(b => {
-            const btn = document.createElement("button");
-            btn.innerText = b.label ?? "Action";
-            btn.classList.add("action-btn", "primary");
-            if (b.variant === "secondary") { btn.classList.remove("primary"); btn.classList.add("secondary"); }
-            if (b.variant === "ghost") { btn.classList.remove("primary"); btn.classList.add("ghost"); }
-            btn.onclick = () => b.action && b.action();
-            if (b.label === "Next" || b.label === "Done" || b.label === "Continue") {
-                btn.classList.add("floating-next-btn");
-            }
-            btnWrap.appendChild(btn);
-        });
-    }
-    if (typeof updateAzkarButton === "function") {
-        updateAzkarButton();
-    }
+  if (typeof updateAzkarButton === "function") {
+    updateAzkarButton();
+  }
 }
 
 function button(label, action, variant) {
-    const b = document.createElement("button");
-    b.innerText = label || "Action";
-    b.classList.add("action-btn");
-    if (variant === "secondary") b.classList.add("secondary");
-    if (variant === "ghost") b.classList.add("ghost");
-    b.onclick = action;
-
-    // If it's a "Next" button, add floating class
-    if (label === "Next" || label === "Done" || label === "Continue") {
-        b.classList.add("floating-next-btn");
-    }
-
-    return b;
+  const b = document.createElement("button");
+  b.innerText = label || "Action";
+  b.classList.add("action-btn");
+  if (variant === "secondary") b.classList.add("secondary");
+  if (variant === "ghost") b.classList.add("ghost");
+  b.onclick = () => {
+    if (typeof removeFloatingNext === "function") removeFloatingNext();
+    if (action) action();
+  };
+  // If it's a "Next" button, add floating class
+  if (label === "Next" || label === "Done" || label === "Continue") {
+    b.classList.add("floating-next-btn");
+  }
+  return b;
 }
 
 // Replace renderMealBar to render floating meals outside #app
 function renderMealBar() {
-    // Remove any old in-app bar if present
-    const old = document.getElementById("mealbar");
-    if (old && old.parentNode) old.parentNode.removeChild(old);
+  // Remove any old in-app bar if present
+  const old = document.getElementById("mealbar");
+  if (old && old.parentNode) old.parentNode.removeChild(old);
 
-    // If fasting, hide floating meals (but still show iftar notification)
-    const existingFloating = document.getElementById("top-mealbar");
-    if (existingFloating) existingFloating.remove();
+  // If fasting, hide floating meals (but still show iftar notification)
+  const existingFloating = document.getElementById("top-mealbar");
+  if (existingFloating) existingFloating.remove();
 
-    // Create floating meal bar appended to body (shows meal pills and an X)
-    // ...existing code...
-    if (!appConfig.fasting && Array.isArray(appConfig.meals) && appConfig.meals.length) {
-        const bar = document.createElement("div");
-        bar.id = "top-mealbar";
-        bar.className = "top-mealbar";
-        const left = document.createElement("div");
-        left.className = "tm-left";
-        left.innerHTML = `<strong style="margin-right:8px;font-size:13px;color:var(--muted)">Meals</strong>`;
-        appConfig.meals.forEach((m, idx) => {
-            const done = !!(mealStatus[idx]?.done);
-            const pill = document.createElement("span");
-            pill.className = "pill";
-            pill.style.marginRight = "8px";
-            pill.style.opacity = done ? "0.5" : "1";
-            pill.innerText = `${m.label} ${m.time}`;
-            left.appendChild(pill);
-        });
-        const close = document.createElement("button");
-        close.className = "top-meal-close ghost";
-        close.innerText = "✕";
-        close.onclick = () => {
-            // Mark all upcoming meals as dismissed/done for today so notifications don't reappear
-            if (!Array.isArray(mealStatus) || mealStatus.length !== appConfig.meals.length) {
-                mealStatus = appConfig.meals.map(m => ({ label: m.label, time: m.time, done: true }));
-            } else {
-                mealStatus.forEach(ms => ms.done = true);
-            }
-            if (typeof saveMealStatus === "function") saveMealStatus();
-            if (typeof saveAppState === "function") saveAppState();
-            bar.remove();
-            const notif = document.getElementById("top-notif-meal");
-            if (notif) notif.remove();
-        };
+  // Create floating meal bar appended to body (shows meal pills and an X)
+  if (!appConfig.fasting && Array.isArray(appConfig.meals) && appConfig.meals.length) {
+    const bar = document.createElement("div");
+    bar.id = "top-mealbar";
+    bar.className = "top-mealbar";
 
-        bar.appendChild(left);
-        bar.appendChild(close);
-        document.body.appendChild(bar);
-    }
+    const left = document.createElement("div");
+    left.className = "tm-left";
+    left.innerHTML = `<strong style="margin-right:8px;font-size:13px;color:var(--muted)">Meals</strong>`;
 
-    // refresh top-left next meal / iftar notification
-    if (typeof showNextMealNotification === "function") showNextMealNotification();
+    appConfig.meals.forEach((m, idx) => {
+      const done = !!(mealStatus[idx]?.done);
+      const pill = document.createElement("span");
+      pill.className = "pill";
+      pill.style.marginRight = "8px";
+      pill.style.opacity = done ? "0.5" : "1";
+      pill.innerText = `${m.label} ${m.time}`;
+      left.appendChild(pill);
+    });
+
+    const close = document.createElement("button");
+    close.className = "top-meal-close ghost";
+    close.innerText = "✕";
+    close.onclick = () => {
+      // Mark all upcoming meals as dismissed/done for today so notifications don't reappear
+      if (!Array.isArray(mealStatus) || mealStatus.length !== appConfig.meals.length) {
+        mealStatus = appConfig.meals.map(m => ({ label: m.label, time: m.time, done: true }));
+      } else {
+        mealStatus.forEach(ms => ms.done = true);
+      }
+      if (typeof saveMealStatus === "function") saveMealStatus();
+      if (typeof saveAppState === "function") saveAppState();
+      bar.remove();
+      const notif = document.getElementById("top-notif-meal");
+      if (notif) notif.remove();
+    };
+
+    bar.appendChild(left);
+    bar.appendChild(close);
+    document.body.appendChild(bar);
+  }
+
+  // refresh top-left next meal / iftar notification
+  if (typeof showNextMealNotification === "function") showNextMealNotification();
 }
 
 // Create persistent restart button (called once at init)
-
 function createRestartButton() {
   if (document.getElementById("restart-btn")) return;
   const btn = document.createElement("button");
@@ -138,8 +144,8 @@ function createRestartButton() {
 }
 
 function centerStage(on = true) {
-    const stage = document.getElementById("stage");
-    if (stage) stage.classList.toggle("center-stage", !!on);
+  const stage = document.getElementById("stage");
+  if (stage) stage.classList.toggle("center-stage", !!on);
 }
 
 function restartDay(hardReload = true) {
@@ -155,6 +161,7 @@ function restartDay(hardReload = true) {
 
     // 2) Clear saved state (per-day and meals)
     if (typeof clearSavedState === "function") clearSavedState();
+
     // Remove any mealStatus_* keys and any dbr_state_* keys in case of date mismatch
     try {
       const toDelete = [];
@@ -200,43 +207,37 @@ function restartDay(hardReload = true) {
       dayMeta.startTs = new Date(0).toISOString();
       location.href = location.pathname;
       return;
-    }else {
-  // 🧼 Soft restart (no reload)
-       clearUI();
-
-       stepIndex = 0;
-       timerRemaining = 0;
-       timerPaused = false;
-
-       if (typeof setProgress === "function") setProgress();
-       askProfile(() => {
-         showSetup(() => {
-           stepIndex = 0;
-           next();
-         });
-       });
+    } else {
+      // Soft restart (no reload)
+      clearUI();
+      stepIndex = 0;
+      timerRemaining = 0;
+      timerPaused = false;
+      if (typeof setProgress === "function") setProgress();
+      askProfile(() => {
+        showSetup(() => {
+          stepIndex = 0;
+          next();
+        });
+      });
     }
-
   } catch (e) {
     // As a fallback, force reload
     location.reload();
   }
 }
+
 function createBoostEnergyButton() {
   if (document.getElementById("boost-btn")) return;
-
   const btn = document.createElement("button");
   btn.id = "boost-btn";
   btn.innerText = "⚡ Boost Energy";
-
   btn.style.position = "fixed";
   btn.style.zIndex = "9998";
-
   btn.onclick = () => {
     localStorage.setItem("forceStep0", "1");
     window.location.href = "src/energy.html";
   };
-
   document.body.appendChild(btn);
 }
 
@@ -245,21 +246,24 @@ function boostEnergy() {
   if (typeof saveAppState === "function") {
     saveAppState();
   }
-
   // Optional: mark where we came from
   localStorage.setItem("returnToApp", "1");
-
   // Go to energy flow
   window.location.href = "src/energy.html";
 }
-
 window.boostEnergy = boostEnergy;
 window.restartDay = restartDay;
+
 function updateAzkarButton() {
   const btn = document.getElementById("azkar-btn");
   if (!btn) return;
 
-  if (isEveningTime()) {
+  // Guarded call (works even if isEveningTime isn't defined elsewhere)
+  const evening = (typeof isEveningTime === "function")
+    ? isEveningTime()
+    : (new Date().getHours() >= 18);
+
+  if (evening) {
     btn.style.display = "inline-flex";
     btn.onclick = () => {
       clearUI();
@@ -273,3 +277,28 @@ function updateAzkarButton() {
     btn.style.display = "none";
   }
 }
+
+// ===============================
+// Manual advance helpers (used by timer end)
+// ===============================
+function showFloatingNext(label = "Next", action = next) {
+  removeFloatingNext();
+  const btn = document.createElement("button");
+  btn.className = "floating-next-btn";
+  btn.textContent = label;
+  btn.onclick = action;
+  document.getElementById("app").appendChild(btn);
+  document.getElementById("app").classList.add("has-floating-next");
+}
+
+function removeFloatingNext() {
+  const btn = document.querySelector(".floating-next-btn");
+  if (btn) btn.remove();
+  const app = document.getElementById("app");
+  if (app) app.classList.remove("has-floating-next");
+}
+
+// Wrapper so timer.js can show a Next button instead of auto-advancing
+window.onTimerEndWrapper = (cb) => {
+  showFloatingNext("Next", cb || next);
+};
