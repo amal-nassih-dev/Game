@@ -16,7 +16,7 @@ const flowConfig = [
   { id: "research", run: stepResearch, restore: restoreResearch },
   { id: "lunch", run: stepLunch, restore: restoreLunch },
   { id: "afternoonWave", run: stepAfternoonWave },
-  { id: "curiosity", run: stepCuriosity, restore: restoreCuriosity },
+  { id: "curiosity", run: stepCuriosity, restore: stepCuriosity },
   { id: "pause", run: stepPause, restore: restorePause },
   { id: "energyReset1", run: stepEnergyReset },
   { id: "evening", run: stepEvening, restore: restoreEvening },
