@@ -4,8 +4,6 @@
 // id is just a label; run is the step function; restore runs on refresh.
 const flowConfig = [
   { id: "grounding", run: stepGrounding, restore: restoreGrounding },
-  { id: "breathing", run: stepBreathing },
-  { id: "morningWalk", run: stepMorningWalk },
   { id: "transition", run: stepTransition },
   { id: "quranMemo", run: stepQuranMemo, restore: restoreQuranMemo },
   { id: "quranReading", run: stepQuranReading, restore: restoreQuranReading },

@@ -496,8 +496,8 @@ let appConfig = {
 
 // Day parts configuration (for dice/waves distribution)
 appConfig.dayParts = {
-    morning: { start: "06:00", end: "12:00", quotaPct: 0.40, maxMinutes: 180 },
-    afternoon: { start: "12:00", end: "18:00", quotaPct: 0.40, maxMinutes: 180 },
+    morning: { start: "06:00", end: "12:00", quotaPct: 0.50, maxMinutes: 280 },
+    afternoon: { start: "12:00", end: "18:00", quotaPct: 0.30, maxMinutes: 180 },
     night: { start: "18:00", end: "23:59", quotaPct: 0.20, maxMinutes: 120 }
 };
 
