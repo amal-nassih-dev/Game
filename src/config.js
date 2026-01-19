@@ -389,24 +389,30 @@ const energyStops = ENERGY_STOPS.calm;
 // Base focus subjects
 const baseFocusSubjects = [
     {
-        name: "❤︎ Java ♥︎", checklist: [
-            "Go through the courses",
-            "Practice them locally in intelliJ",
-            "See 2 to 3 java interview questions and try to answer them "
+        name: "Python", checklist: [
+            "Go through 2 courses ",
+            "Practice them locally in Jupyter Notebook",
+            "See 2 to 3 python interview questions and try to answer them "
         ]
     },
     {
-        name: "𑣲React", checklist: [
-            "Go through some of the course in Scrimba",
-            "Go through some of the course in Oreilly",
-            "Practice them locally",
-            "Document what you learned."
+        name: "SQL", checklist: [
+            "Go through the documentation and finish anything related to creating table till queries ",
+            "Make sure to practice that locally without needing to look at the code",
+            "See 1 to 2 SQL interview questions and try to answer them "
+        ]
+    },
+    {
+        name: "Job Search", checklist: [
+            "Get a list on what is wrong in CV use ChatGPT to help you with that and also search online",
+            "Send my CV to Amal at least",
+            "do a quick search on linkedIn for the job section and note down what they are asking for and add that as a note to this",
         ]
     },
     {
         name: "🟢 Problem Solving (DSA)", checklist: [
-            "Answer at least 2 questions on leetcode",
-            "explain in 1 line what you have learned and what technique you could use for later"
+            "Go through 2 problems on LeetCode about Prefix Sum",
+            "Have dftar just for the patterns, write the pattern name in uppercase then try to see and understand that, and then explain it"
         ]
     }
 ];
@@ -460,9 +466,9 @@ let appConfig = {
     iftarTime: "18:30",
     suhoorTime: "05:30",
     meals: [
-        { label: "Breakfast", time: "08:30", macro: "Dirilk xi kas t atay m3a khobz w frmaj w xi danone" },
-        { label: "Lunch", time: "13:30", macro: "protein + veggies + fruits" },
-        { label: "Dinner", time: "19:30", macro: "good plate, hydrate well" }
+        { label: "Breakfast", time: "08:30", macro: "" },
+        { label: "Lunch", time: "13:30", macro: "" },
+        { label: "Dinner", time: "19:30", macro: "" }
     ],
     foodChallenges: ["2 fruits", "2 bottles water", "No refined sugar", "No fried food"],
     categories: {
