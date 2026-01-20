@@ -397,21 +397,20 @@ const baseFocusSubjects = [
     },
     {
         name: "SQL", checklist: [
-            "Go through the documentation and finish anything related to creating table till queries ",
+            "Go through joins and subqueries and respond to exercises",
             "Make sure to practice that locally without needing to look at the code",
             "See 1 to 2 SQL interview questions and try to answer them "
         ]
     },
     {
         name: "Job Search", checklist: [
-            "Get a list on what is wrong in CV use ChatGPT to help you with that and also search online",
-            "Send my CV to Amal at least",
-            "do a quick search on linkedIn for the job section and note down what they are asking for and add that as a note to this",
+            "Choose two companies and then try to find people who work on it on linkedIn",
+            "try to connect with them by sending email but it is better to see if the company is asking for job and then ask them to refer you to a job or internship "
         ]
     },
     {
         name: "🟢 Problem Solving (DSA)", checklist: [
-            "Go through 2 problems on LeetCode about Prefix Sum",
+            "Go through 3 problems on LeetCode about Prefix Sum",
             "Have dftar just for the patterns, write the pattern name in uppercase then try to see and understand that, and then explain it"
         ]
     }
